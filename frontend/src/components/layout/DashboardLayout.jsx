@@ -114,7 +114,7 @@ const DashboardLayout = ({ activeMenu, children }) => {
               <div className="h-8 w-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
                 <Briefcase className="h-5 w-5 text-white" />
               </div>
-              <span className="text-gray-900 font-bold text-xl">JobPortal</span>
+              <span className="text-gray-900 font-bold text-xl">CareerPilot</span>
             </Link>
           ) : (
             <div className="h-8 w-8 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center">

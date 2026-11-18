@@ -14,7 +14,7 @@ const Footer = () => {
                 <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
                   <Briefcase className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-800">Job-Portal</h3>
+                <h3 className="text-2xl font-bold text-gray-800">CareerPilot</h3>
               </div>
 
               <p className={`text-sm text-gray-600 max-w-md mx-auto`}>
@@ -26,11 +26,20 @@ const Footer = () => {
             {/* Copyright */}
             <div className="space-y-2">
               <p className={`text-sm text-gray-600`}>
-                &copy; {new Date().getFullYear()} Job-Portal. All rights
+                &copy; {new Date().getFullYear()} CareerPilot. All rights
                 reserved.
               </p>
               <p className={`text-sm text-gray-500`}>
-                Made with ❤️ by Abhay Singh
+                CareerPilot by Ashutosh Tiwari · based on{" "}
+                <a
+                  href="https://github.com/Abhay-0103/Job-Portal-Project"
+                  className="underline hover:text-gray-700"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Job Portal by Abhay Singh
+                </a>{" "}
+                (MIT)
               </p>
             </div>
           </div>
