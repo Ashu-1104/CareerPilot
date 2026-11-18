@@ -18,6 +18,9 @@ const interviewRoutes = require("./routes/interviewRoutes");
 const matchRoutes = require("./routes/matchRoutes");
 
 const app = express();
+// behind Apache / Vercel: take the client's protocol (https) from X-Forwarded-Proto,
+// so links built from the request (uploaded files) are https
+app.set("trust proxy", 1);
 
 // Middleware to handle CORS
 app.use(
