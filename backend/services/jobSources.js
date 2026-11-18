@@ -44,9 +44,17 @@ const fetchJson = async (url) => {
     return res.json();
 };
 
+// Some feeds send UTF-8 text that was decoded as Latin-1 once too often
+// ("whatâ€™s", "Â·"). Undo that when the text shows those tell-tale pairs.
+const fixMojibake = (text) => {
+    if (!/Ã.|Â.|â€/.test(text)) return text;
+    const repaired = Buffer.from(text, "latin1").toString("utf8");
+    return repaired.includes("\ufffd") ? text : repaired;
+};
+
 // HTML job descriptions to plain text, keeping paragraphs and list items readable.
 const htmlToText = (html = "") =>
-    String(html)
+    fixMojibake(String(html))
         .replace(/<\s*(br|\/p|\/div|\/h[1-6]|\/li|\/ul|\/ol)\s*\/?>/gi, "\n")
         .replace(/<\s*li[^>]*>/gi, "• ")
         .replace(/<[^>]+>/g, "")
@@ -67,7 +75,7 @@ const htmlToText = (html = "") =>
 // Non-tech roles that would otherwise match a word like "AI" or "mobile".
 const NON_TECH = /\b(sales|marketing|collections?|business development|account (manager|executive)|recruit(er|ing)?|talent acquisition|customer (success|support|service)|operations? (manager|executive|lead)|finance|legal|payroll|field|relationship manager|doctor|nurse|physician|lawyer|attorney|teacher|tutor|accounting|accountant|bookkeep(ing|er)|ai train(ing|er))\b/i;
 // roles open only to people in another country
-const OTHER_COUNTRY_ONLY = /\b(u\.?s\.?|usa|us|uk|eu|canada) (based|only)\b/i;
+const OTHER_COUNTRY_ONLY = /\b((u\.?s\.?|usa|us|uk|eu|canada) (based|only)|latam|latin america|emea|europe only)\b/i;
 
 const categoryFor = (title = "") =>
     NON_TECH.test(title) || OTHER_COUNTRY_ONLY.test(title) ? undefined : CATEGORY_RULES.find(([, re]) => re.test(title))?.[0];
@@ -137,7 +145,7 @@ const sources = {
             .map((j) => job({
                 source: "remoteok",
                 externalId: j.id,
-                title: j.position,
+                title: fixMojibake(j.position || ""),
                 companyName: j.company,
                 companyLogoUrl: j.company_logo || j.logo,
                 location: remoteLabel(j.location),
