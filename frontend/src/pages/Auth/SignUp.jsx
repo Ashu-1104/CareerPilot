@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 import {
   User,
   Mail,
@@ -127,21 +128,26 @@ const SignUp = () => {
     setFormState((prev) => ({ ...prev, loading: true }));
 
     try {
-      let avatarUrl = "";
-
-      // Upload image if present
-      if (formData.avatar) {
-        const imgUploadRes = await uploadImage(formData.avatar);
-        avatarUrl = imgUploadRes.imageUrl || "";
-      }
-
       const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, {
         name: formData.fullName,
         email: formData.email,
         password: formData.password,
         role: formData.role,
-        avatar: avatarUrl || "",
       });
+
+      // uploads need a logged-in user: add the photo once the account exists
+      if (formData.avatar && response.data?.token) {
+        localStorage.setItem("token", response.data.token);
+        try {
+          const imgUploadRes = await uploadImage(formData.avatar);
+          if (imgUploadRes.imageUrl) {
+            await axiosInstance.put(API_PATHS.AUTH.UPDATE_PROFILE, { avatar: imgUploadRes.imageUrl });
+            response.data.avatar = imgUploadRes.imageUrl;
+          }
+        } catch {
+          toast.error("Account created, but the photo could not be uploaded. Add it from your profile.");
+        }
+      }
 
       // Handle success Registration
       setFormState((prev) => ({

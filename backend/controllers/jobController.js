@@ -2,16 +2,11 @@ const Job = require('../models/Job');
 const User = require('../models/User');
 const Application = require('../models/Application');
 const SavedJob = require('../models/SavedJob');
-const { SOURCE_INFO } = require('../services/jobSources');
 const { importJobs } = require('../services/jobImport');
 const { sendJobAlerts } = require('../services/jobAlerts');
 const { matchScore } = require('../services/skills');
-
-// The logged-in job seeker's match for a job (only their own; never from a query parameter).
-const matchFor = (req, job) =>
-    req.user?.role === 'jobSeeker' && req.user.resumeSkills?.length
-        ? matchScore(req.user.resumeSkills, job.skills)
-        : undefined;
+const { withCompany, matchFor } = require('../services/jobView');
+const { sendError } = require('../services/httpError');
 
 // Fields an employer's request may never set on a job.
 const SYSTEM_FIELDS = ['company', 'source', 'externalId', 'applyUrl', 'companyName', 'companyLogoUrl', 'skills', 'lastSeenAt', 'postedAt'];
@@ -27,18 +22,6 @@ const locationPattern = (location) => {
 
 const escapeRegex = (text) => String(text).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-// Imported jobs carry their company inline; give them the same `company` shape
-// as posted jobs, plus where they came from.
-const withCompany = (job) => {
-    const data = job.toObject ? job.toObject() : job;
-    if (data.source === 'careerpilot' || !data.source) return data;
-    return {
-        ...data,
-        company: { companyName: data.companyName, companyLogo: data.companyLogoUrl },
-        sourceInfo: SOURCE_INFO[data.source] || { name: data.source, url: null },
-    };
-};
-
 
 // @desc   Create a new job posting (Employer only)
 exports.createJob = async (req, res) => {
@@ -50,7 +33,7 @@ exports.createJob = async (req, res) => {
         const job = await Job.create({ ...jobInput(req.body), company: req.user._id });
         res.status(201).json(job);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        sendError(res, error);
     }
 };
 
@@ -155,7 +138,7 @@ exports.getJobs = async (req, res) => {
         res.json({ jobs: jobsWithExtras, total, page, pages: Math.ceil(total / limit) });
 
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        sendError(res, error);
     }
 };
 
@@ -189,7 +172,7 @@ exports.getJobsEmployer = async (req, res) => {
 
         res.json(jobsWithApplicationCounts);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        sendError(res, error);
     }
 };
 
@@ -229,7 +212,7 @@ exports.getJobById = async (req, res) => {
             applicationId,
         });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        sendError(res, error);
     }
 };
 
@@ -251,7 +234,7 @@ exports.updateJob = async (req, res) => {
         const updated = await job.save();
         res.json(updated);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        sendError(res, error);
     }
 };
 
@@ -272,7 +255,7 @@ exports.deleteJob = async (req, res) => {
         await job.deleteOne();
         res.json({ message: 'Job deleted successfully' });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        sendError(res, error);
     }
 };
 
@@ -295,7 +278,7 @@ exports.toggleCloseJob = async (req, res) => {
 
         res.json({ message: "Job marked as closed" });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        sendError(res, error);
     }
 };
 // @desc   Import jobs from public job boards (daily cron, or `npm run import-jobs`)
@@ -310,7 +293,7 @@ exports.runJobImport = async (req, res) => {
         report.alerts = await sendJobAlerts();
         res.json(report);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        sendError(res, error);
     }
 };
 
@@ -333,6 +316,6 @@ exports.getJobStats = async (req, res) => {
             sources: sources.length,
         });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        sendError(res, error);
     }
 };

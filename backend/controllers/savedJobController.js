@@ -1,3 +1,5 @@
+const { sendError } = require('../services/httpError');
+const { withCompany, matchFor } = require('../services/jobView');
 const SavedJob = require('../models/SavedJob');
 
 // Save a job
@@ -14,7 +16,7 @@ exports.saveJob = async (req, res) => {
         });
         res.status(201).json(saved);
     } catch (err) {
-        res.status(500).json({ message: "Failed to save job", error: err.message });
+        sendError(res, err);
     }
 };
 
@@ -24,7 +26,7 @@ exports.unsaveJob = async (req, res) => {
         await SavedJob.findOneAndDelete({ job: req.params.jobId, jobSeeker: req.user._id });
         res.json({ message: "Job removed from saved list" });
     } catch (err) {
-        res.status(500).json({ message: "Failed to remove saved job", error: err.message });
+        sendError(res, err);
     }
 };
 
@@ -39,8 +41,16 @@ exports.getMySavedJobs = async (req, res) => {
                 select: "name companyName companyLogo"
             },
      });
-        res.json(savedJobs);
+        // a saved job whose posting was deleted has job = null: leave it out
+        res.json(
+            savedJobs
+                .filter((saved) => saved.job)
+                .map((saved) => ({
+                    ...saved.toObject(),
+                    job: { ...withCompany(saved.job), match: matchFor(req, saved.job), isSaved: true },
+                }))
+        );
     } catch (err) {
-        res.status(500).json({ message: "Failed to fetch saved jobs", error: err.message });
+        sendError(res, err);
     }
 };

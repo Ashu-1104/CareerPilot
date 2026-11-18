@@ -16,6 +16,7 @@ const trackerRoutes = require("./routes/trackerRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const interviewRoutes = require("./routes/interviewRoutes");
 const matchRoutes = require("./routes/matchRoutes");
+const fileRoutes = require("./routes/fileRoutes");
 
 const app = express();
 // behind Apache / Vercel: take the client's protocol (https) from X-Forwarded-Proto,
@@ -48,6 +49,7 @@ app.use("/api/tracker", trackerRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/interviews", interviewRoutes);
 app.use("/api/match", matchRoutes);
+app.use("/api/files", fileRoutes);
 
 // serve uploads folder 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {}));

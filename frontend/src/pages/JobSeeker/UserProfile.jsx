@@ -11,6 +11,7 @@ import axiosInstance from '../../utils/axiosInstance';
 import { API_PATHS } from '../../utils/apiPaths';
 import uploadImage from '../../utils/uploadImage';
 import Navbar from '../../components/layout/Navbar';
+import { openFile } from '../../utils/openFile';
 
 // Skills CareerPilot read from the resume, which drive the job match scores.
 const ResumeSkills = ({ resume }) => {
@@ -320,13 +321,9 @@ const UserProfile = () => {
                         <div className='flex items-center gap-2'>
                           <p className='text-sm text-gray-600'>
                             Link:{" "}
-                            <a
-                              href={user?.resume}
-                              target='_blank'
-                              className='text-navy-900 underline cursor-pointer'
-                            >
-                              {user?.resume}
-                            </a>
+                            <button type='button' onClick={() => openFile(user?.resume)} className='text-navy-900 underline cursor-pointer text-left break-all'>
+                              View your resume (PDF)
+                            </button>
                           </p>
 
                           <button className='cursor-pointer' onClick={DeleteResume}>

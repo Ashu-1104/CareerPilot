@@ -163,7 +163,7 @@ const ManageJobs = () => {
         const formattedJobs = response.data?.map((job) => ({
           id: job._id,
           title: job?.title,
-          company: job?.company?.name,
+          company: job?.company?.companyName || job?.company?.name,
           status: job?.isClosed ? "Closed" : "Active",
           applicants: job?.applicationCount || 0,
           datePosted: moment(job?.createdAt).format("DD-MM-YYYY"),

@@ -3,17 +3,19 @@ const path = require("path");
 // the package's index runs a self-test when required directly; use its library file
 const pdfParse = require("pdf-parse/lib/pdf-parse.js");
 const { resumeSkills } = require("./skills");
+const { PRIVATE_DIR, PUBLIC_DIR } = require("../middlewares/uploadMiddleware");
 
 const MAX_BYTES = 5 * 1024 * 1024;
 
 // Reads a resume PDF from its URL: our own uploads folder, or any https URL
 // (cloud storage in production).
 const readResume = async (url) => {
-    const name = String(url).split("/uploads/")[1];
-    if (name && !name.includes("..")) {
-        const local = path.join(__dirname, "..", "uploads", path.basename(decodeURIComponent(name)));
+    // our own files: private resumes (/api/files/...) or older public uploads (/uploads/...)
+    for (const [marker, dir] of [["/api/files/", PRIVATE_DIR], ["/uploads/", PUBLIC_DIR]]) {
+        const name = String(url).split(marker)[1];
+        if (!name) continue;
         try {
-            return await fs.readFile(local);
+            return await fs.readFile(path.join(dir, path.basename(decodeURIComponent(name))));
         } catch {
             // not on this server: fetch it below
         }

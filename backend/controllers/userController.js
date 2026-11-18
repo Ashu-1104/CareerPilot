@@ -1,3 +1,4 @@
+const { sendError } = require('../services/httpError');
 const fs = require('fs');
 const path = require('path');
 const User = require('../models/User');
@@ -47,7 +48,7 @@ exports.updateProfile = async (req, res) => {
         });
     } catch (err) {
         console.error('Error updating profile:', err);
-        res.status(500).json({ message: err.message });
+        sendError(res, err);
     }
 };
 
@@ -69,12 +70,13 @@ exports.deleteResume = async (req, res) => {
             return res.status(403).json({ message: 'Only jobSeekers can delete resumes' });
         }
 
-        // Extract filename from URL
-        const filename = resumeUrl?.split('/')?.pop();
+        // Only ever the user's own resume (never a file named in the request)
+        const filename = user.resume ? path.basename(user.resume.split('?')[0]) : '';
 
         if (filename) {
-            // construct file path
-            const filePath = path.join(__dirname, '../uploads', filename);
+            const { PRIVATE_DIR, PUBLIC_DIR } = require('../middlewares/uploadMiddleware');
+            const dir = user.resume.includes('/api/files/') ? PRIVATE_DIR : PUBLIC_DIR;
+            const filePath = path.join(dir, filename);
 
             // Check if file exists and delete
             if (fs.existsSync(filePath)) {
@@ -101,7 +103,7 @@ exports.deleteResume = async (req, res) => {
         }});
     } catch (err) {
         console.error('Error deleting resume:', err);
-        res.status(500).json({ message: err.message });
+        sendError(res, err);
     }
 };
 
@@ -116,6 +118,6 @@ exports.getPublicProfile = async (req, res) => {
         }
         res.json(user);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        sendError(res, err);
     }
 };

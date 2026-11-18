@@ -23,6 +23,7 @@ import { getInitials } from "../../utils/helper";
 import StatusBadge from "../../components/StatusBadge";
 import ApplicantProfilPreview from "../../components/Cards/ApplicantProfilPreview";
 import ChatDrawer from "../../components/ChatDrawer";
+import { openFile } from "../../utils/openFile";
 import ScheduleInterviewModal from "../../components/ScheduleInterviewModal";
 
 const ApplicationViewer = () => {
@@ -84,7 +85,7 @@ const ApplicationViewer = () => {
   }, [applications]);
 
   const handleDownloadResume = (resumeUrl) => {
-    window.open(resumeUrl, "_blank");
+    openFile(resumeUrl);
   };
 
   return (

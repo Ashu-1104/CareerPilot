@@ -1,3 +1,4 @@
+const { sendError } = require('../services/httpError');
 const Application = require("../models/Application");
 const Job = require("../models/Job");
 const { trackJob, syncFromApplication } = require("./trackerController");
@@ -44,7 +45,7 @@ exports.applyToJob = async (req, res) => {
 
         res.status(201).json(application);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        sendError(res, error);
     }
 };
 
@@ -57,7 +58,7 @@ exports.getMyApplications = async (req, res) => {
 
         res.json(apps);
     } catch (error) {
-        res.status(500).json({ message: err.message });
+        sendError(res, err);
     }
 };
 
@@ -76,7 +77,7 @@ exports.getApplicantsForJob = async (req, res) => {
 
         res.json(applications);
     } catch (error) {
-        res.status(500).json({ message: err.message });
+        sendError(res, err);
     }
 };
 
@@ -84,7 +85,7 @@ exports.getApplicantsForJob = async (req, res) => {
 exports.getApplicationById = async (req, res) => {
     try {
         const app = await Application.findById(req.params.id)
-            .populate("job", "title")
+            .populate("job", "title company")
             .populate("applicant", "name email avatar resume");
 
         if (!app) return res.status(404).json({ message: 'Application not found', id: req.params.id });
@@ -99,7 +100,7 @@ exports.getApplicationById = async (req, res) => {
 
         res.json(app);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        sendError(res, err);
     }
 };
 
@@ -107,6 +108,9 @@ exports.getApplicationById = async (req, res) => {
 exports.updateStatus = async (req, res) => {
     try {
         const { status } = req.body;
+        if (!Application.schema.path("status").enumValues.includes(status)) {
+            return res.status(400).json({ message: "Unknown application status" });
+        }
         const app = await Application.findById(req.params.id).populate("job");
 
         if (!app || app.job.company.toString() !== req.user._id.toString()) {
@@ -126,6 +130,6 @@ exports.updateStatus = async (req, res) => {
 
         res.json({ message: 'Application status updated', status });
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        sendError(res, err);
     }
 };
