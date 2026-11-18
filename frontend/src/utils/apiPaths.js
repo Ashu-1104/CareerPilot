@@ -1,4 +1,6 @@
-export const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+// The API's address: VITE_API_URL when set; in a production build without it the
+// API is on the same domain (Vercel); in development the local API.
+export const BASE_URL = import.meta.env.VITE_API_URL ?? (import.meta.env.PROD ? "" : "http://localhost:8000");
 
 export const API_PATHS = {
     AUTH: {

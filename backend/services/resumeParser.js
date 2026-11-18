@@ -4,16 +4,19 @@ const path = require("path");
 const pdfParse = require("pdf-parse/lib/pdf-parse.js");
 const { resumeSkills } = require("./skills");
 const { PRIVATE_DIR, PUBLIC_DIR } = require("../middlewares/uploadMiddleware");
+const Upload = require("../models/Upload");
 
 const MAX_BYTES = 5 * 1024 * 1024;
 
 // Reads a resume PDF from its URL: our own uploads folder, or any https URL
 // (cloud storage in production).
 const readResume = async (url) => {
-    // our own files: private resumes (/api/files/...) or older public uploads (/uploads/...)
+    // our own files: in MongoDB, or on disk from older versions
     for (const [marker, dir] of [["/api/files/", PRIVATE_DIR], ["/uploads/", PUBLIC_DIR]]) {
         const name = String(url).split(marker)[1];
         if (!name) continue;
+        const stored = await Upload.findOne({ name: path.basename(decodeURIComponent(name)) }).select("data");
+        if (stored) return stored.data;
         try {
             return await fs.readFile(path.join(dir, path.basename(decodeURIComponent(name))));
         } catch {

@@ -3,6 +3,7 @@ const fs = require('fs');
 const User = require('../models/User');
 const Job = require('../models/Job');
 const Application = require('../models/Application');
+const Upload = require('../models/Upload');
 const { PRIVATE_DIR } = require('../middlewares/uploadMiddleware');
 
 const escapeRegex = (text) => String(text).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -29,12 +30,29 @@ exports.getPrivateFile = async (req, res) => {
             );
         }
 
-        if (!allowed || !fs.existsSync(file)) {
-            return res.status(404).json({ message: 'File not found' });
-        }
+        if (!allowed) return res.status(404).json({ message: 'File not found' });
         res.set('Cache-Control', 'private, no-store');
-        res.sendFile(file, { headers: { 'Content-Type': 'application/pdf', 'Content-Disposition': `inline; filename="${name}"` } });
+        res.set('Content-Disposition', `inline; filename="${name}"`);
+
+        const stored = await Upload.findOne({ name, private: true }).select('data contentType');
+        if (stored) return res.type(stored.contentType).send(stored.data);
+        // resumes saved on disk by older versions
+        if (fs.existsSync(file)) return res.sendFile(file, { headers: { 'Content-Type': 'application/pdf' } });
+        res.status(404).json({ message: 'File not found' });
     } catch (error) {
         res.status(500).json({ message: 'Could not open the file' });
+    }
+};
+
+// @desc   A public upload (photo or logo) stored in MongoDB
+// @route  GET /uploads/:name
+exports.servePublicUpload = async (req, res) => {
+    try {
+        const stored = await Upload.findOne({ name: path.basename(req.params.name), private: false }).select('data contentType');
+        if (!stored) return res.status(404).json({ message: 'File not found' });
+        res.set('Cache-Control', 'public, max-age=86400, immutable');
+        res.type(stored.contentType).send(stored.data);
+    } catch {
+        res.status(404).json({ message: 'File not found' });
     }
 };

@@ -1,0 +1,15 @@
+{
+  "installCommand": "npm ci --prefix backend --omit=dev && npm ci --prefix frontend --include=dev",
+  "buildCommand": "npm run build --prefix frontend",
+  "outputDirectory": "frontend/dist",
+  "regions": ["bom1"],
+  "functions": {
+    "api/index.js": { "maxDuration": 300 }
+  },
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/index.js" },
+    { "source": "/uploads/(.*)", "destination": "/api/index.js" },
+    { "source": "/((?!api/|uploads/).*)", "destination": "/index.html" }
+  ],
+  "crons": [{ "path": "/api/jobs/import", "schedule": "30 0 * * *" }]
+}

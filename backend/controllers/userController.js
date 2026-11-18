@@ -75,6 +75,7 @@ exports.deleteResume = async (req, res) => {
 
         if (filename) {
             const { PRIVATE_DIR, PUBLIC_DIR } = require('../middlewares/uploadMiddleware');
+            await require('../models/Upload').deleteOne({ name: filename, owner: user._id });
             const dir = user.resume.includes('/api/files/') ? PRIVATE_DIR : PUBLIC_DIR;
             const filePath = path.join(dir, filename);
 
