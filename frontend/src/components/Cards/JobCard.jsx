@@ -1,152 +1,115 @@
 // Global Imports
 import React from "react";
-import { Bookmark, Building, Building2, Calendar, ExternalLink, MapPin } from "lucide-react";
+import { Bookmark, ExternalLink, MapPin } from "lucide-react";
 import moment from "moment";
 
 // Local Imports
 import { useAuth } from "../../context/AuthContext";
 import StatusBadge from "../StatusBadge";
-import { trackExternalApply } from "../../utils/helper";
+import MatchRing from "../MatchRing";
+import { formatSalary, trackExternalApply } from "../../utils/helper";
 
+const initialsOf = (name = "") =>
+  name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0].toUpperCase())
+    .join("") || "?";
+
+// A job in the list (Design B). Imported jobs open the company's site to apply.
 const JobCard = ({ job, onClick, onToggleSave, onApply, saved, hideApply }) => {
+  const { user } = useAuth();
+  const isExternal = job?.source && job.source !== "careerpilot";
+  const company = job?.company?.companyName || job?.company?.name || "";
+  const isSeeker = user?.role === "jobSeeker";
 
-    const { user } = useAuth();
-    const isExternal = job?.source && job.source !== "careerpilot";
-    const formatSalary = (min, max) => {
-    if (!min && !max) return "Salary not disclosed";
-    const formatNumber = (num) => {
-        if (num >= 1000) return `$${(num / 1000).toFixed(0)}K`;
-        return `$${num}`;
-    };
-    return `${formatNumber(min || max)}/m`;
-    };
-
-  return <div 
-  className="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-xl hover:shadow-gray-200 transition-all duration-300 group relative overflow-hidden cursor-pointer"
-    onClick={onClick}
+  return (
+    <article
+      className="bg-white rounded-[20px] border border-sand p-5 flex flex-col gap-4 cursor-pointer hover:shadow-lg hover:shadow-sand transition-shadow"
+      onClick={onClick}
     >
-        <div className="flex items-start justify-between mb-4">
-            <div className="flex items-start gap-4">
-                {job?.company?.companyLogo ? (
-                    <img
-                src={job?.company?.companyLogo}
-                alt="Company Logo"
-                className="w-14 h-14 object-cover rounded-2xl border-4 border-white/20 shadow-lg"
-                />
-                ) : (
-                    <div className="w-14 h-14 bg-gray-50 border-2 border-gray-200 rounded-2xl flex items-center justify-center">
-                        <Building2 className="h-8 w-8 text-gray-400" />
-                    </div>
-                )}
-
-                <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900 text-base group-hover:text-blue-600 transition-colors leading-snug">
-                        {job.title}
-                        </h3>
-                    <p className="text-gray-600 text-sm mt-1 flex items-center gap-2">
-                        <Building className="w-3.5 h-3.5" />
-                        {job?.company?.companyName}
-                        </p>
-                </div>
-            </div>
-            {user && (
-                <button
-                className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
-                onClick={(e) => {
-                    e.stopPropagation();
-                    onToggleSave();
-                }}
+      <div className="flex items-start justify-between gap-3">
+        {job?.company?.companyLogo ? (
+          <img src={job.company.companyLogo} alt="" className="w-12 h-12 rounded-[14px] object-cover bg-white border border-sand" />
+        ) : (
+          <span className="w-12 h-12 rounded-[14px] bg-navy-900 text-white font-display font-bold flex items-center justify-center">
+            {initialsOf(company)}
+          </span>
+        )}
+        <div className="flex items-center gap-1">
+          {isSeeker && <MatchRing score={job?.match?.score} />}
+          {user && (
+            <button
+              className="w-11 h-11 rounded-full hover:bg-sand/60 flex items-center justify-center"
+              aria-label={job?.isSaved || saved ? "Remove from saved jobs" : "Save job"}
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleSave();
+              }}
             >
-                <Bookmark
-                className={`w-5 h-5 hover:text-blue-600 ${ job?.isSaved || saved ? "text-blue-600" : "text-gray-400"
-                     }`}
-                />
+              <Bookmark className={`w-5 h-5 ${job?.isSaved || saved ? "fill-navy-900 text-navy-900" : "text-stone-400"}`} />
             </button>
-            )}
+          )}
         </div>
+      </div>
 
-        <div className="mb-5">
-            <div className="flex items-center gap-2 text-xs">
-                <span className="flex items-center gap-1.5 bg-gray-100 text-gray-700 px-3 py-1 rounded-full font-medium">
-                    <MapPin className="w-3 h-3" />
-                    {job?.location}
-                </span>
-                <span
-                    className={`px-3 py-1 rounded-full font-medium ${
-                        job?.type === "Full-Time"
-                            ? "bg-green-100 text-green-800"
-                        : job.type === "Part-Time"
-                            ? "bg-yellow-100 text-yellow-800"
-                        : job.type === "Contract" 
-                         ?"bg-purple-100 text-purple-800"
-                         : "bg-blue-100 text-blue-800"
-                         }`}
-                >
-                    {job?.type}
-                </span>
-                <span className="flex items-center gap-1.5 bg-gray-100 text-gray-700 px-3 py-1 rounded-full font-medium">
-                    {job?.category}
-                </span>
-            </div>
-            </div>
+      <div className="min-w-0">
+        <h3 className="text-lg font-bold text-stone-900 leading-snug">{job.title}</h3>
+        <p className="text-sm text-stone-600 mt-1 flex items-center gap-1.5 min-w-0">
+          <span className="truncate">{company}</span>
+          {job?.location && (
+            <>
+              <span aria-hidden="true">·</span>
+              <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+              <span className="truncate">{job.location}</span>
+            </>
+          )}
+        </p>
+      </div>
 
-        <div className="flex items-center justify-between text-xs font-medium text-gray-500 mb-5 pb-4 border-b border-gray-100">
-            <div className="flex items-center gap-4">
-                <span className="flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5" />
-                    {job?.postedAt || job?.createdAt
-                        ? moment(job.postedAt || job.createdAt).format("DD MMM YYYY")
-                        : "N/A"}
-                </span>
-                {isExternal && (
-                    <span className="truncate">via {job?.sourceInfo?.name}</span>
-                )}
-                </div>
-                </div>
+      <div className="flex gap-1.5 flex-wrap text-xs font-medium">
+        {job?.type && <span className="bg-stone-100 text-stone-700 px-2.5 py-1 rounded-full">{job.type}</span>}
+        <span className="bg-stone-100 text-stone-700 px-2.5 py-1 rounded-full">{formatSalary(job?.salaryMin, job?.salaryMax)}</span>
+        {job?.category && <span className="bg-stone-100 text-stone-700 px-2.5 py-1 rounded-full">{job.category}</span>}
+      </div>
 
-                <div className="flex items-center justify-between">
-            <div className={`font-semibold ${job?.salaryMin || job?.salaryMax ? "text-blue-600 text-lg" : "text-gray-500 text-sm"}`}>
-                {formatSalary(job?.salaryMin, job?.salaryMax)}
-                </div>
-                {!saved && (
-                    <>
-                    {job?.applicationStatus ? (
-                        <StatusBadge status={job?.applicationStatus} />
-                    ) : isExternal ? (
-                        !hideApply && (
-                            // imported jobs are applied for on the company's own site
-                            <a
-                                href={job.applyUrl}
-                                target="_blank"
-                                rel="noreferrer"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    if (user?.role === "jobSeeker") trackExternalApply(job._id);
-                                }}
-                                className="flex items-center gap-1.5 bg-gradient-to-r from-blue-50 to-blue-50 text-sm text-blue-700 hover:text-white px-5 py-2.5 rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-300 font-semibold"
-                            >
-                                Apply on site
-                                <ExternalLink className="w-3.5 h-3.5" />
-                            </a>
-                        )
-                    ) : (
-                        !hideApply && (
-                            <button
-                               className="bg-gradient-to-r from-blue-50 to-blue-50 text-sm text-blue-700 hover:text-white px-6 py-2.5 rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-300 font-semibold transform hover:-translate-y-0.5 shadow-sm hover:shadow-md"
-
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    onApply();
-                                }}
-                            >
-                                Apply Now
-                            </button>
-                        )
-                    )}
-                    </>
-                )}
-        </div>
-    </div>;
+      <div className="mt-auto pt-4 border-t border-dashed border-sand-dark flex items-center justify-between gap-3">
+        <span className="text-xs text-stone-500 min-w-0 leading-snug line-clamp-2">
+          {isExternal ? `via ${job?.sourceInfo?.name}` : "Posted on CareerPilot"}
+          {" · "}
+          {moment(job?.postedAt || job?.createdAt).fromNow()}
+        </span>
+        {!saved &&
+          (job?.applicationStatus ? (
+            <StatusBadge status={job.applicationStatus} />
+          ) : hideApply ? null : isExternal ? (
+            <a
+              href={job.applyUrl}
+              target="_blank"
+              rel="noreferrer"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (isSeeker) trackExternalApply(job._id);
+              }}
+              className="flex-shrink-0 h-11 px-4 rounded-full bg-navy-900 text-white text-sm font-semibold flex items-center gap-1.5 hover:bg-navy-800"
+            >
+              Apply on site <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+          ) : (
+            <button
+              className="flex-shrink-0 h-11 px-4 rounded-full bg-navy-900 text-white text-sm font-semibold hover:bg-navy-800"
+              onClick={(e) => {
+                e.stopPropagation();
+                onApply();
+              }}
+            >
+              Easy apply
+            </button>
+          ))}
+      </div>
+    </article>
+  );
 };
 
 export default JobCard;

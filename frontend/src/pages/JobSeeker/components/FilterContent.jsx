@@ -7,10 +7,10 @@ import { CATEGORIES, JOB_SOURCES, JOB_TYPES } from "../../../utils/data";
 import SalaryRangeSlider from "../../../components/Input/SalaryRangeSlider";
 
 const FilterSection = ({ title, isExpanded, onToggle, children }) => (
-  <div className="border-b border-gray-200 pb-4 mb-4 last:border-b-0">
+  <div className="border-b border-sand pb-4 mb-4 last:border-b-0">
     <button
       onClick={onToggle}
-      className="flex items-center justify-between w-full text-left font-semibold text-gray-900 mb-3 hover:text-blue-600 transition-colors"
+      className="flex items-center justify-between w-full text-left font-semibold text-stone-900 mb-3 hover:text-navy-800 transition-colors"
     >
       {title}
       {isExpanded ? (
@@ -35,7 +35,7 @@ const FilterContent = ({
       <div className="flex items-center justify-between mb-6">
         <button
           onClick={clearAllFilters}
-          className="text-blue-600 hover:text-blue-700 font-semibold text-sm"
+          className="text-navy-900 hover:text-navy-800 underline font-semibold text-sm"
         >
           Clear All
         </button>
@@ -54,13 +54,13 @@ const FilterContent = ({
             >
               <input
                 type="checkbox"
-                className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                className="rounded border-gray-300 accent-navy-900 w-4 h-4"
                 checked={filters?.source === source.value}
                 onChange={(e) =>
                   handleFilterChange("source", e.target.checked ? source.value : "")
                 }
               />
-              <span className="ml-3 text-gray-700 font-medium">
+              <span className="ml-3 text-stone-700">
                 {source.label}
               </span>
             </label>
@@ -81,13 +81,13 @@ const FilterContent = ({
             >
               <input
                 type="checkbox"
-                className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                className="rounded border-gray-300 accent-navy-900 w-4 h-4"
                 checked={filters?.type === type.value}
                 onChange={(e) =>
                   handleFilterChange("type", e.target.checked ? type.value : "")
                 }
               />
-              <span className="ml-3 text-gray-700 font-medium">
+              <span className="ml-3 text-stone-700">
                 {type.label}
               </span>
             </label>
@@ -119,7 +119,7 @@ const FilterContent = ({
             >
               <input
                 type="checkbox"
-                className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                className="rounded border-gray-300 accent-navy-900 w-4 h-4"
                 checked={filters?.category === type.value}
                 onChange={(e) =>
                   handleFilterChange(
@@ -128,7 +128,7 @@ const FilterContent = ({
                   )
                 }
               />
-              <span className="ml-3 text-gray-700 font-medium">
+              <span className="ml-3 text-stone-700">
                 {type.value}
               </span>
             </label>

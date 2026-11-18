@@ -7,7 +7,7 @@ import { useNotifications } from "../hooks/useNotifications";
 
 const ICONS = { application: Briefcase, status: RefreshCw, message: MessageSquare, interview: CalendarClock };
 
-const NotificationBell = () => {
+const NotificationBell = ({ dark = false }) => {
   const { items, unread, markAllRead } = useNotifications();
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
@@ -22,16 +22,16 @@ const NotificationBell = () => {
   return (
     <div className="relative" ref={ref}>
       <button
-        className="p-2 rounded-xl hover:bg-gray-100 transition-colors duration-200 relative"
+        className={`p-2 rounded-full transition-colors duration-200 relative ${dark ? "hover:bg-navy-800" : "hover:bg-gray-100"}`}
         onClick={() => {
           setOpen(!open);
           if (!open && unread) markAllRead();
         }}
         aria-label={`Notifications${unread ? ` (${unread} unread)` : ""}`}
       >
-        <Bell className="h-5 w-5 text-gray-500" />
+        <Bell className={`h-5 w-5 ${dark ? "text-white" : "text-gray-500"}`} />
         {unread > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center">
+          <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-saffron-400 text-navy-900 text-[10px] font-bold flex items-center justify-center">
             {unread > 9 ? "9+" : unread}
           </span>
         )}
@@ -53,9 +53,9 @@ const NotificationBell = () => {
                       setOpen(false);
                       if (n.link) navigate(n.link);
                     }}
-                    className={`w-full text-left px-4 py-3 flex gap-3 hover:bg-gray-50 border-b border-gray-50 ${n.read ? "" : "bg-blue-50/50"}`}
+                    className={`w-full text-left px-4 py-3 flex gap-3 hover:bg-gray-50 border-b border-gray-50 ${n.read ? "" : "bg-saffron-100/50"}`}
                   >
-                    <Icon className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                    <Icon className="w-4 h-4 text-navy-800 mt-0.5 flex-shrink-0" />
                     <span className="min-w-0">
                       <span className="block text-sm font-medium text-gray-900">{n.title}</span>
                       {n.body && <span className="block text-xs text-gray-600 mt-0.5 line-clamp-2">{n.body}</span>}

@@ -1,13 +1,19 @@
 // Global Imports
 import React from "react";
 import { useState, useEffect } from "react";
-import { Briefcase, Bookmark, CalendarClock, KanbanSquare } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Bookmark } from "lucide-react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 
 // Local Imports
 import { useAuth } from "../../context/AuthContext";
 import ProfileDropdown from "./ProfileDropdown";
 import NotificationBell from "../NotificationBell";
+
+const SEEKER_LINKS = [
+  { to: "/find-jobs", label: "Find jobs" },
+  { to: "/tracker", label: "Tracker" },
+  { to: "/interviews", label: "Interviews" },
+];
 
 const Navbar = () => {
   const { user, logout, isAuthenticated } = useAuth();
@@ -27,80 +33,87 @@ const Navbar = () => {
   }, [profileDropdownOpen]);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-navy-900 text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center gap-6 h-16">
           {/* Logo */}
-          <Link to="/find-jobs" className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
-              <Briefcase className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-lg font-bold text-gray-900">CareerPilot</span>
+          <Link to="/find-jobs" className="font-display font-bold text-xl tracking-tight">
+            Career<span className="text-saffron-400">Pilot</span>
           </Link>
 
-          {/* Auth Buttons */}
-          <div className="flex items-center space-x-3">
-            {user?.role === "jobSeeker" && (
-              <button
-                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-gray-100 transition-colors duration-200 text-sm font-medium text-gray-600"
-                onClick={() => navigate("/tracker")}
-                title="Application tracker"
-              >
-                <KanbanSquare className="h-5 w-5 text-gray-500" />
-                <span className="hidden sm:inline">Tracker</span>
-              </button>
-            )}
-            {user?.role === "jobSeeker" && (
-              <button
-                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-gray-100 transition-colors duration-200 text-sm font-medium text-gray-600"
-                onClick={() => navigate("/interviews")}
-                title="Interviews"
-              >
-                <CalendarClock className="h-5 w-5 text-gray-500" />
-                <span className="hidden sm:inline">Interviews</span>
-              </button>
-            )}
-            {user && <NotificationBell />}
+          {user?.role === "jobSeeker" && (
+            <nav className="hidden md:flex items-center gap-1 text-sm font-medium" aria-label="Main">
+              {SEEKER_LINKS.map((link) => (
+                <NavLink
+                  key={link.to}
+                  to={link.to}
+                  className={({ isActive }) =>
+                    `px-4 py-2 rounded-full transition-colors ${
+                      isActive ? "bg-saffron-400 text-navy-900" : "text-navy-100 hover:bg-navy-800"
+                    }`
+                  }
+                >
+                  {link.label}
+                </NavLink>
+              ))}
+            </nav>
+          )}
+
+          <div className="ml-auto flex items-center gap-2">
             {user && (
               <button
-                className="p-2 rounded-xl hover:bg-gray-100 transition-colors duration-200 relative"
+                className="w-10 h-10 rounded-full hover:bg-navy-800 transition-colors flex items-center justify-center"
                 onClick={() => navigate("/saved-jobs")}
+                aria-label="Saved jobs"
               >
-                <Bookmark className="h-5 w-5 text-gray-500" />
+                <Bookmark className="h-5 w-5" />
               </button>
             )}
+            {user && <NotificationBell dark />}
 
             {isAuthenticated ? (
-              <ProfileDropdown
-                isOpen={profileDropdownOpen}
-                onToggle={(e) => {
-                  e.stopPropagation();
-                  setProfileDropdownOpen(!profileDropdownOpen);
-                }}
-                avatar={user?.avatar || ""}
-                companyName={user?.name || ""}
-                email={user?.email || ""}
-                userRole={user?.role || ""}
-                onLogout={logout}
-              />
+                <ProfileDropdown
+                  dark
+                  isOpen={profileDropdownOpen}
+                  onToggle={(e) => {
+                    e.stopPropagation();
+                    setProfileDropdownOpen(!profileDropdownOpen);
+                  }}
+                  avatar={user?.avatar || ""}
+                  companyName={user?.name || ""}
+                  email={user?.email || ""}
+                  userRole={user?.role || ""}
+                  onLogout={logout}
+                />
             ) : (
               <>
-                <a
-                  href="/login"
-                  className="text-gray-600 hover:text-gray-900 transition-colors font-medium px-4 py-2 rounded-lg hover:bg-gray-500"
-                >
+                <Link to="/login" className="text-sm font-medium text-navy-100 hover:text-white px-3 py-2">
                   Login
-                </a>
-                <a
-                  href="/signup"
-                  className="bg-gradient-to-r from-blue-600 to-purple-500 text-white font-medium px-6 py-2 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-sm hover:shadow-md"
-                >
-                  Sign Up
-                </a>
+                </Link>
+                <Link to="/signup" className="text-sm font-semibold bg-saffron-400 text-navy-900 px-4 py-2 rounded-full">
+                  Sign up
+                </Link>
               </>
             )}
           </div>
         </div>
+
+        {/* phone: the main links as a scrollable row under the logo */}
+        {user?.role === "jobSeeker" && (
+          <nav className="md:hidden flex gap-1 pb-3 overflow-x-auto text-sm font-medium" aria-label="Main">
+            {SEEKER_LINKS.map((link) => (
+              <NavLink
+                key={link.to}
+                to={link.to}
+                className={({ isActive }) =>
+                  `px-4 py-1.5 rounded-full whitespace-nowrap ${isActive ? "bg-saffron-400 text-navy-900" : "text-navy-100"}`
+                }
+              >
+                {link.label}
+              </NavLink>
+            ))}
+          </nav>
+        )}
       </div>
     </header>
   );

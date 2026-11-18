@@ -10,6 +10,7 @@ const ProfileDropdown = ({
   email,
   onLogout,
   userRole,
+  dark = false, // on the navy job-seeker header
 }) => {
   const navigate = useNavigate();
 
@@ -37,7 +38,7 @@ const ProfileDropdown = ({
   return <div className="relative">
     <button
       onClick={onToggle}
-      className="flex items-center space-x-3 p-2 rounded-xl hover:bg-gray-50 transition-colors duration-200"
+      className={`flex items-center space-x-3 p-2 rounded-xl transition-colors duration-200 ${dark ? "hover:bg-navy-800" : "hover:bg-gray-50"}`}
       >
         {avatar ? (
           <img
@@ -46,17 +47,17 @@ const ProfileDropdown = ({
             className="h-9 w-9 object-cover rounded-xl"
             />
         ) : (
-          <div className="h-8 w-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-          <span className="text-white font-semibold text-sm">
+          <div className={`h-9 w-9 rounded-full flex items-center justify-center ${dark ? "bg-saffron-400" : "bg-navy-900"}`}>
+          <span className={`font-semibold text-sm ${dark ? "text-navy-900" : "text-white"}`}>
             {companyName.charAt(0).toUpperCase()}
           </span>
           </div>
         )}
         <div className="hidden sm:block text-left">
-          <p className="text-sm font-medium text-gray-900">{companyName}</p>
-          <p className="text-xs text-gray-500">{formatRole(userRole)}</p>
+          <p className={`text-sm font-medium ${dark ? "text-white" : "text-gray-900"}`}>{companyName}</p>
+          <p className={`text-xs ${dark ? "text-navy-100" : "text-gray-500"}`}>{formatRole(userRole)}</p>
         </div>
-        <ChevronDown className="h-4 w-4 text-gray-400" />
+        <ChevronDown className={`h-4 w-4 ${dark ? "text-navy-100" : "text-gray-400"}`} />
       </button>
 
     {isOpen && (

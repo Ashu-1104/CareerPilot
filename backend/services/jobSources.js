@@ -144,8 +144,9 @@ const sources = {
                 description: j.description,
                 applyUrl: j.url,
                 tags: j.tags,
-                salaryMin: j.salary_min || undefined,
-                salaryMax: j.salary_max || undefined,
+                // Remote OK salaries are US dollars; the app shows rupees, so leave them out
+                salaryMin: null,
+                salaryMax: null,
                 postedAt: j.date,
             }));
     },

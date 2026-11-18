@@ -17,6 +17,13 @@ const SYSTEM_FIELDS = ['company', 'source', 'externalId', 'applyUrl', 'companyNa
 const jobInput = (body = {}) =>
     Object.fromEntries(Object.entries(body).filter(([key]) => !SYSTEM_FIELDS.includes(key)));
 
+// Cities listed under more than one name: searching either finds both.
+const CITY_NAMES = [['bengaluru', 'bangalore'], ['gurugram', 'gurgaon'], ['mumbai', 'bombay'], ['chennai', 'madras'], ['kolkata', 'calcutta']];
+const locationPattern = (location) => {
+    const names = CITY_NAMES.find((group) => group.includes(location.trim().toLowerCase()));
+    return names ? names.join('|') : escapeRegex(location);
+};
+
 const escapeRegex = (text) => String(text).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 // Imported jobs carry their company inline; give them the same `company` shape
@@ -70,7 +77,7 @@ exports.getJobs = async (req, res) => {
                 { tags: { $regex: escapeRegex(keyword), $options: 'i' } },
             ],
         }),
-        ...(location && { location: { $regex: escapeRegex(location), $options: 'i' } }),
+        ...(location && { location: { $regex: locationPattern(location), $options: 'i' } }),
         ...(source === 'careerpilot' && { source: 'careerpilot' }),
         ...(source === 'external' && { source: { $ne: 'careerpilot' } }),
         ...(category && { category }),

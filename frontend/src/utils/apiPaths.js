@@ -26,6 +26,11 @@ export const API_PATHS = {
         CONFIRM: (id) => `/api/interviews/${id}/confirm`, // Candidate picks a slot
         CANCEL: (id) => `/api/interviews/${id}/cancel`,
     },
+    MATCH: {
+        OVERVIEW: "/api/match/overview", // Resume skills, strong matches, top missing skills
+        REFRESH: "/api/match/refresh", // Read the resume again
+        INSIGHT: (jobId) => `/api/match/${jobId}/insight`, // AI summary + cover letter
+    },
     TRACKER: {
         GET: "/api/tracker", // Tracked jobs and stats
         ADD: "/api/tracker", // Track a job ({ jobId } or a job from another site)

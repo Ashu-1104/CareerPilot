@@ -54,3 +54,13 @@ export const getInitials = (name) => {
 export const trackExternalApply = (jobId) => {
     axiosInstance.post(API_PATHS.TRACKER.ADD, { jobId, stage: "Applied" }).catch(() => {});
 };
+
+// Salaries in rupees per year: "₹7–11 LPA" from 7,00,000 and 11,00,000.
+export const formatSalary = (min, max) => {
+    if (!min && !max) return "Salary not disclosed";
+    const fmt = (n) =>
+        n >= 100000 ? `${Number((n / 100000).toFixed(1))}` : `₹${Number(n).toLocaleString("en-IN")}`;
+    const lpa = (min || max) >= 100000;
+    if (min && max && min !== max) return lpa ? `₹${fmt(min)}–${fmt(max)} LPA` : `${fmt(min)}–${fmt(max)}`;
+    return lpa ? `₹${fmt(min || max)} LPA` : fmt(min || max);
+};

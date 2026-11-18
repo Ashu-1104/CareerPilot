@@ -1,19 +1,40 @@
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap");
 @import "tailwindcss";
 
+/* Design B "Warm Bold": navy and saffron on warm cream */
 @theme {
-  --font-display: 'Playfair Display', serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "Space Grotesk", "Inter", sans-serif;
   --breakpoint-3xl: 1920px;
-  --color-primary: #00A7F3;
+  --color-primary: #1e2a5a;
+  --color-navy-950: #141c3d;
+  --color-navy-900: #1e2a5a;
+  --color-navy-800: #2d3b70;
+  --color-navy-100: #e0e7ff;
+  --color-saffron-500: #f59e0b;
+  --color-saffron-400: #fbbf24;
+  --color-saffron-100: #fef3c7;
+  --color-saffron-900: #78350f;
+  --color-cream: #fffbf5;
+  --color-sand: #f1e6d6;
+  --color-sand-dark: #e7dccb;
 }
 
 @layer base {
   html {
-    font-family: var(--font-display);
+    font-family: var(--font-sans);
   }
 
   body {
-    background-color: #f7fafe;
+    background-color: var(--color-cream);
+    color: #1c1917;
     overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
   }
 }
