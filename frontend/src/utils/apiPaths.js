@@ -39,6 +39,7 @@ export const API_PATHS = {
     },
     JOBS: {
         GET_ALL_JOBS: "/api/jobs", // Get all job listings
+        STATS: "/api/jobs/stats", // Live counts for the home page
         GET_JOB_BY_ID: (id) => `/api/jobs/${id}`, // Get job details by ID
         POST_JOB: "/api/jobs", // Post a new job
         GET_JOBS_EMPLOYER: "/api/jobs/get-jobs-employer", // Get jobs posted by the logged-in employer

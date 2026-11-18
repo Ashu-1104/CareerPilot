@@ -92,7 +92,7 @@ const ApplicationViewer = () => {
       {loading && (
         <div className="min-h-screen bg-gray-50 flex items-center justify-center">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-navy-900 mx-auto"></div>
             <p className="mt-4 text-gray-600">Loading Applications...</p>
           </div>
         </div>
@@ -105,7 +105,7 @@ const ApplicationViewer = () => {
             <div className="flex items-center gap-4 mb-4 sm:mb-0">
               <button
                 onClick={() => navigate("/manage-jobs")}
-                className="group flex items-center space-x-2 px-3 py-2 text-sm font-medium text-gray-600 hover:text-white bg-white/50 hover:bg-gradient-to-r hover:from-blue-500 hover:to-blue-600 border border-gray-200 hover:border-transparent rounded-xl transition-all duration-300 shadow-lg shadow-gray-100 hover:shadow-xl"
+                className="group flex items-center space-x-2 px-3 py-2 text-sm font-medium text-gray-600 hover:text-white bg-white/50 hover:bg-gradient-to-r hover:bg-navy-800 border border-gray-200 hover:border-transparent rounded-xl transition-all duration-300 shadow-lg shadow-gray-100 hover:shadow-xl"
               >
                 <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
                 <span className="cursor-pointer">Back</span>
@@ -141,13 +141,13 @@ const ApplicationViewer = () => {
                     className="bg-white rounded-xl shadow-md overflow-hidden"
                   >
                     {/* Job Header */}
-                    <div className="bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-4">
+                    <div className="bg-navy-900 px-6 py-4">
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div>
                           <h2 className="text-lg font-semibold text-white">
                             {job.title}
                           </h2>
-                          <div className="flex flex-wrap items-center gap-4 mt-2 text-blue-100">
+                          <div className="flex flex-wrap items-center gap-4 mt-2 text-navy-100">
                             <div className="flex items-center gap-1">
                               <MapPin className="h-4 w-4" />
                               <span className="text-sm">{job.location}</span>
@@ -188,8 +188,8 @@ const ApplicationViewer = () => {
                                     className="h-12 w-12 rounded-full object-cover"
                                   />
                                 ) : (
-                                  <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
-                                    <span className="text-blue-600 font-semibold">
+                                  <div className="h-12 w-12 rounded-full bg-saffron-100 flex items-center justify-center">
+                                    <span className="text-navy-900 font-semibold">
                                       {getInitials(application?.applicant?.name || "A")}
                                     </span>
                                   </div>
@@ -225,8 +225,8 @@ const ApplicationViewer = () => {
                                     application.applicant.resume
                                   )
                                 }
-                                className="inline-flex items-center gap-2 px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg
-                                  hover:bg-blue-700 transition-colors cursor-pointer"
+                                className="inline-flex items-center gap-2 px-3 py-2 bg-navy-900 text-white text-sm font-medium rounded-lg
+                                  hover:bg-navy-800 transition-colors cursor-pointer"
                               >
                                 <Download className="h-4 w-4" />
                                 Resume

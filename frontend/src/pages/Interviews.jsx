@@ -71,7 +71,7 @@ const Interviews = () => {
           {interview.scheduledAt && (
             <div className="text-right flex-shrink-0">
               <p className="text-sm font-bold text-gray-900">{moment(interview.scheduledAt).format("ddd, D MMM")}</p>
-              <p className="text-sm text-blue-600 font-semibold">{moment(interview.scheduledAt).format("h:mm A")}</p>
+              <p className="text-sm text-navy-900 font-semibold">{moment(interview.scheduledAt).format("h:mm A")}</p>
             </div>
           )}
         </div>
@@ -86,7 +86,7 @@ const Interviews = () => {
                 <button
                   key={slot}
                   onClick={() => act(axiosInstance.post(API_PATHS.INTERVIEWS.CONFIRM(interview._id), { slot }), "Interview confirmed")}
-                  className="px-3 py-2 rounded-xl border border-blue-200 bg-blue-50 text-blue-700 text-sm font-medium hover:bg-blue-600 hover:text-white transition-colors"
+                  className="px-3 py-2 rounded-xl border border-sand bg-saffron-100 text-navy-900 text-sm font-medium hover:bg-navy-800 hover:text-white transition-colors"
                 >
                   {moment(slot).format("ddd D MMM, h:mm A")}
                 </button>
@@ -103,7 +103,7 @@ const Interviews = () => {
         <div className="flex items-center gap-3 mt-4">
           {interview.status === "Confirmed" && interview.location && (
             /^https?:\/\//.test(interview.location) ? (
-              <a href={interview.location} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 rounded-xl">
+              <a href={interview.location} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-sm font-semibold text-white bg-navy-900 px-4 py-2 rounded-xl">
                 Join <ExternalLink className="w-3.5 h-3.5" />
               </a>
             ) : (
@@ -155,7 +155,7 @@ const Interviews = () => {
   return isEmployer ? (
     <DashboardLayout activeMenu="interviews">{content}</DashboardLayout>
   ) : (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen bg-cream">
       <Navbar />
       <div className="container mx-auto px-4 pt-24 pb-12">{content}</div>
     </div>

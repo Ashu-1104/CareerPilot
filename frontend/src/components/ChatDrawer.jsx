@@ -84,11 +84,11 @@ const ChatDrawer = ({ applicationId, title, onClose }) => {
               <div key={m._id} className={`flex ${mine ? "justify-end" : "justify-start"}`}>
                 <div
                   className={`max-w-[80%] rounded-2xl px-4 py-2 text-sm ${
-                    mine ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-br-sm" : "bg-white border border-gray-200 text-gray-800 rounded-bl-sm"
+                    mine ? "bg-navy-900 text-white rounded-br-sm" : "bg-white border border-gray-200 text-gray-800 rounded-bl-sm"
                   }`}
                 >
                   <p className="whitespace-pre-wrap break-words">{m.text}</p>
-                  <p className={`text-[10px] mt-1 ${mine ? "text-blue-100" : "text-gray-400"}`}>
+                  <p className={`text-[10px] mt-1 ${mine ? "text-navy-100" : "text-gray-400"}`}>
                     {moment(m.createdAt).format("DD MMM, h:mm a")}
                     {mine && m.readAt ? " · Seen" : ""}
                   </p>
@@ -105,11 +105,11 @@ const ChatDrawer = ({ applicationId, title, onClose }) => {
             onChange={(e) => setText(e.target.value)}
             maxLength={2000}
             placeholder="Write a message..."
-            className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
+            className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-saffron-400"
           />
           <button
             disabled={sending || !text.trim()}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl px-4 disabled:opacity-50"
+            className="bg-navy-900 text-white rounded-xl px-4 disabled:opacity-50"
             aria-label="Send"
           >
             <Send className="w-4 h-4" />

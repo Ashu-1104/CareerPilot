@@ -22,7 +22,7 @@ import ApplicantDashboardCard from "../../components/Cards/ApplicantDashboardCar
 const Card = ({ title, headerAction, subtitle, className, children }) => {
   return (
     <div
-      className={`bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200 ${className}`}
+      className={`${/\bbg-/.test(className || "") ? "" : "bg-white"} rounded-[20px] border border-sand shadow-sm hover:shadow-md transition-shadow duration-200 ${className || ""}`}
     >
       {(title || headerAction) && (
         <div className="flex items-center justify-between p-6 pb-4">
@@ -50,20 +50,21 @@ const StatCard = ({
   trendValue,
   color = "blue",
 }) => {
+  // Design B tiles: navy, deeper navy, saffron, white
   const colorClasses = {
-    blue: "from-blue-500 to-blue-600",
-    green: "from-green-500 to-green-600",
-    purple: "from-violet-500 to-purple-600",
-    orange: "from-orange-500 to-orange-600",
+    blue: "bg-navy-900 text-white",
+    purple: "bg-navy-800 text-white",
+    green: "bg-saffron-400 text-navy-900",
+    orange: "bg-white text-navy-900 border border-sand",
   };
 
   return (
     <Card
-      className={`bg-gradient-to-br ${colorClasses[color]} text-white border-0`}
+      className={colorClasses[color]}
     >
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-white/80 text-sm font-medium">{title}</p>
+          <p className="opacity-80 text-sm font-medium">{title}</p>
           <p className="text-3xl font-bold mt-1">{value}</p>
           {trend && (
             <div className="flex items-center mt-2 text-sm">
@@ -72,7 +73,7 @@ const StatCard = ({
             </div>
           )}
         </div>
-        <div className="bg-white/10 p-3 rounded-xl">
+        <div className="bg-current/10 p-3 rounded-xl">
           <Icon className="h-6 w-6" />
         </div>
       </div>
@@ -150,7 +151,7 @@ const EmployerDashboard = () => {
               subtitle="Your latest job postings"
               headerAction={
                 <button
-                  className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                  className="text-sm text-navy-900 hover:text-navy-800 font-medium"
                   onClick={() => navigate("/manage-jobs")}
                 >
                   View All Jobs
@@ -171,7 +172,7 @@ const EmployerDashboard = () => {
               subtitle="Latest applications from candidates"
               headerAction={
                 <button
-                  className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                  className="text-sm text-navy-900 hover:text-navy-800 font-medium"
                   onClick={() => navigate("/manage-jobs")}
                 >
                   View All
@@ -203,7 +204,7 @@ const EmployerDashboard = () => {
                 {
                   title: "Post a New Job",
                   icon: Plus,
-                  color: "bg-blue-50 text-blue-700",
+                  color: "bg-saffron-100 text-navy-900",
                   path: "/post-job",
                 },
                 {

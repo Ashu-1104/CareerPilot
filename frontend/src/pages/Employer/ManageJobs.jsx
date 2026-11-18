@@ -118,9 +118,9 @@ const ManageJobs = () => {
     if (sortField !== field)
       return <ChevronUp className="w-4 h-4 text-gray-400" />;
     return sortDirection === "asc" ? (
-      <ChevronUp className="w-4 h-4 text-blue-600" />
+      <ChevronUp className="w-4 h-4 text-navy-900" />
     ) : (
-      <ChevronDown className="w-4 h-4 text-blue-600" />
+      <ChevronDown className="w-4 h-4 text-navy-900" />
     );
   };
 
@@ -206,7 +206,7 @@ const ManageJobs = () => {
               </div>
 
               <button
-                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-xl shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 transition-all duration-300 transform hover:-translate-y-0.5 whitespace-nowrap"
+                className="inline-flex items-center px-6 py-3 bg-navy-900 hover:bg-navy-800 text-white font-semibold rounded-xl shadow-lg shadow-sand hover:shadow-xl hover:shadow-sand transition-all duration-300 transform hover:-translate-y-0.5 whitespace-nowrap"
                 onClick={() => navigate("/post-job")}
               >
                 <Plus className="w-5 h-5 mr-2" />
@@ -229,7 +229,7 @@ const ManageJobs = () => {
                   placeholder="Search Jobs..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="block w-full pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-0 transition-all duration-200 bg-gray-50/50 placeholder-gray-400"
+                  className="block w-full pl-10 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-saffron-400/20 focus:border-navy-900 outline-0 transition-all duration-200 bg-gray-50/50 placeholder-gray-400"
                 />
               </div>
 
@@ -238,7 +238,7 @@ const ManageJobs = () => {
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="block w-full px-4 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
+                  className="block w-full px-4 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-saffron-400/20 focus:border-navy-900 transition-all duration-200"
                 >
                   <option value="All">All Status</option>
                   <option value="Active">Active</option>
@@ -316,7 +316,7 @@ const ManageJobs = () => {
                         : paginatedJobs.map((job) => (
                             <tr
                               key={job.id}
-                              className="hover:bg-blue-50/30 transition-all duration-200 border-b border-gray-100/60"
+                              className="hover:bg-saffron-100/30 transition-all duration-200 border-b border-gray-100/60"
                             >
                               <td className="px-6 py-5 whitespace-nowrap min-w-[200px] sm:min-w-0">
                                 <div>
@@ -341,7 +341,7 @@ const ManageJobs = () => {
                               </td>
                               <td className="px-6 py-5 whitespace-nowrap min-w-[130px] sm:min-w-0">
                                 <button
-                                  className="flex items-center text-sm text-blue-600 hover:text-blue-800 font-semibold transition-colors duration-200 hover:bg-blue-50 px-2 py-1 rounded-lg"
+                                  className="flex items-center text-sm text-navy-900 hover:text-navy-800 font-semibold transition-colors duration-200 hover:bg-saffron-100 px-2 py-1 rounded-lg"
                                   onClick={() =>
                                     navigate("/applicants", {
                                       state: { jobId: job.id },
@@ -355,7 +355,7 @@ const ManageJobs = () => {
                               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium min-w-[180px] sm:min-w-0">
                                 <div className="flex space-x-2">
                                   <button
-                                    className="text-blue-600 hover:text-blue-800 p-2 rounded-lg hover:bg-blue-50 transition-colors duration-200"
+                                    className="text-navy-900 hover:text-navy-800 p-2 rounded-lg hover:bg-saffron-100 transition-colors duration-200"
                                     onClick={() =>
                                       navigate("/post-job", {
                                         state: { jobId: job.id },
@@ -461,7 +461,7 @@ const ManageJobs = () => {
                             onClick={() => setCurrentPage(page)}
                             className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
                               currentPage === page
-                                ? "z-10 bg-blue-50 border-blue-500 text-blue-600"
+                                ? "z-10 bg-saffron-100 border-navy-900 text-navy-900"
                                 : "bg-white border-gray-300 text-gray-500 hover:bg-gray-50"
                             }`}
                           >

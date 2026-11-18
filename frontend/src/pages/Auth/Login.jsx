@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import {
   Mail,
   Lock,
@@ -134,11 +135,12 @@ setTimeout(() => {
 
   if (formState.success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-cream px-4">
+      <Link to="/" className="font-display font-bold text-2xl text-navy-900 mb-6">Career<span className="text-saffron-500">Pilot</span></Link>
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-white p-8 rounded-xl shadow-lg max-w-md w-full text-center"
+          className="bg-white p-8 rounded-[20px] border border-sand shadow-[0_12px_32px_rgba(30,42,90,0.08)] max-w-md w-full text-center"
         >
           <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
@@ -147,7 +149,7 @@ setTimeout(() => {
           <p className="text-gray-600 mb-4">
             You Have Been Successfully Logged-In.
           </p>
-          <div className="animate-spin w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full mx-auto" />
+          <div className="animate-spin w-6 h-6 border-2 border-navy-900 border-t-transparent rounded-full mx-auto" />
           <p className="text-sm text-gray-500 mt-2">
             Redirecting To Your Dashboard...
           </p>
@@ -157,12 +159,13 @@ setTimeout(() => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-cream p-4">
+      <Link to="/" className="font-display font-bold text-2xl text-navy-900 mb-6">Career<span className="text-saffron-500">Pilot</span></Link>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-white p-8 rounded-xl shadow-lg max-w-md w-full"
+        className="bg-white p-8 rounded-[20px] border border-sand shadow-[0_12px_32px_rgba(30,42,90,0.08)] max-w-md w-full"
       >
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
@@ -184,7 +187,7 @@ setTimeout(() => {
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className={`w-full pl-10 pr-4 py-3 rounded-lg border ${formState.error.email ? "border-red-500" : "border-gray-300"} focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors`}
+                className={`w-full pl-10 pr-4 py-3 rounded-lg border ${formState.error.email ? "border-red-500" : "border-gray-300"} focus:ring-2 focus:ring-saffron-400 focus:border-transparent transition-colors`}
                 placeholder="Enter your email"
               />
             </div>
@@ -207,7 +210,7 @@ setTimeout(() => {
                 name="password"
                 value={formData.password}
                 onChange={handleInputChange}
-                className={`w-full pl-10 pr-12 py-3 rounded-lg border ${formState.error.password ? "border-red-500" : "border-gray-300"} focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors`}
+                className={`w-full pl-10 pr-12 py-3 rounded-lg border ${formState.error.password ? "border-red-500" : "border-gray-300"} focus:ring-2 focus:ring-saffron-400 focus:border-transparent transition-colors`}
                 placeholder="Enter your password"
               />
               <button
@@ -250,7 +253,7 @@ setTimeout(() => {
           <button
             type="submit"
             disabled={formState.loading}
-            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center space-x-2 cursor-pointer"
+            className="w-full bg-navy-900 text-white py-3 rounded-lg font-semibold hover:bg-navy-800 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center space-x-2 cursor-pointer"
           >
             {formState.loading ? (
               <>
@@ -268,7 +271,7 @@ setTimeout(() => {
               Don't have an account?{" "}
               <a
                 href="/signup"
-                className="text-blue-500 hover:text-blue-800 font-medium"
+                className="text-navy-900 hover:text-navy-800 font-medium"
               >
                 Create One Here
               </a>

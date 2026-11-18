@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import {
   AlertCircle,
   MapPin,
-  DollarSign,
+  IndianRupee,
   Briefcase,
   Users,
   Eye,
@@ -199,7 +199,7 @@ const JobPostingForm = () => {
 
   return (
     <DashboardLayout activeMenu="post-job">
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/20 py-8 px-4 sm:px-6 lg:px-6">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 py-8 px-4 sm:px-6 lg:px-6">
         <div className="max-w-4xl mx-auto">
           <div className="bg-white shadow-xl rounded-2xl p-6">
             <div className="flex items-center justify-between mb-8">
@@ -215,7 +215,7 @@ const JobPostingForm = () => {
                 <button
                   onClick={() => setIsPreview(true)}
                   disabled={!isFormValid()}
-                  className="group flex items-center space-x-2 px-6 py-3 text-sm font-medium text-gray-600 hover:text-white bg-white/50 hover:bg-gradient-to-r hover:from-blue-500 hover:to-blue-600 border border-gray-200 hover:border-transparent rounded-xl transition-all duration-300 shadow-lg shadow-gray-100 hover:shadow-xl transform hover:-translate-y-0.5"
+                  className="group flex items-center space-x-2 px-6 py-3 text-sm font-medium text-gray-600 hover:text-white bg-white/50 hover:bg-gradient-to-r hover:bg-navy-800 border border-gray-200 hover:border-transparent rounded-xl transition-all duration-300 shadow-lg shadow-gray-100 hover:shadow-xl transform hover:-translate-y-0.5"
                 >
                   <Eye className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
                   <span>Preview Job Posting</span>
@@ -243,7 +243,7 @@ const JobPostingForm = () => {
                     <InputField
                       label="Location"
                       id="location"
-                      placeholder="e.g., New York, NY"
+                      placeholder="e.g., Bengaluru, or Remote (India)"
                       value={formData.location}
                       onChange={(e) =>
                         handleInputChange("location", e.target.value)
@@ -315,35 +315,35 @@ const JobPostingForm = () => {
               {/* Salary Range */}
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700">
-                  Salary Range <span className="text-red-500">*</span>
+                  Salary Range (₹ per year) <span className="text-red-500">*</span>
                 </label>
                 <div className="grid grid-cols-3 gap-3">
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
-                      <DollarSign className="h-5 w-5 text-gray-400" />
+                      <IndianRupee className="h-5 w-5 text-gray-400" />
                     </div>
                     <input
                       type="number"
-                      placeholder="Min"
+                      placeholder="Min per year, e.g. 700000"
                       value={formData.salaryMin}
                       onChange={(e) =>
                         handleInputChange("salaryMin", e.target.value)
                       }
-                      className="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:border-blue-500 transition-colors duration-200"
+                      className="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-saffron-400 focus:ring-opacity-20 focus:border-navy-900 transition-colors duration-200"
                     />
                   </div>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
-                      <DollarSign className="h-5 w-5 text-gray-400" />
+                      <IndianRupee className="h-5 w-5 text-gray-400" />
                     </div>
                     <input
                       type="number"
-                      placeholder="Max"
+                      placeholder="Max per year, e.g. 1100000"
                       value={formData.salaryMax}
                       onChange={(e) =>
                         handleInputChange("salaryMax", e.target.value)
                       }
-                      className="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:border-blue-500 transition-colors duration-200"
+                      className="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-saffron-400 focus:ring-opacity-20 focus:border-navy-900 transition-colors duration-200"
                     />
                   </div>
                 </div>
@@ -360,7 +360,7 @@ const JobPostingForm = () => {
                 <button
                   onClick={handleSubmit}
                   disabled={isSubmitting || !isFormValid()}
-                  className="w-full flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-offset-2 focus:ring-blue-500 disabled:bg-gray-400 disabled:cursor-not-allowed outline-none transition-colors duration-200"
+                  className="w-full flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-navy-900 hover:bg-navy-800 focus:outline-none focus:ring-offset-2 focus:ring-saffron-400 disabled:bg-gray-400 disabled:cursor-not-allowed outline-none transition-colors duration-200"
                 >
                   {isSubmitting ? (
                     <>

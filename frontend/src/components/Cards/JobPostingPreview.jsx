@@ -2,7 +2,7 @@
 import React from "react";
 import {
   MapPin,
-  DollarSign,
+  IndianRupee,
   ArrowLeft,
   Building2,
   Clock,
@@ -15,10 +15,10 @@ import { useAuth } from "../../context/AuthContext";
 
 const JobPostingPreview = ({ formData, setIsPreview }) => {
   const { user } = useAuth();
-  const currencies = [{ value: "usd", label: "$" }];
+  const currencies = [{ value: "inr", label: "₹" }];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/20 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8 backdrop-blur-sm bg-white/80 border border-white/20 shadow-xl rounded-2xl px-6 pt-6">
@@ -30,7 +30,7 @@ const JobPostingPreview = ({ formData, setIsPreview }) => {
             </div>
             <button
               onClick={() => setIsPreview(false)}
-              className="group flex items-center space-x-2 px-6 py-3 text-xs md:text-sm font-medium text-gray-600 hover:text-white bg-white/50 hover:bg-gradient-to-r hover:from-blue-500 hover:to-blue-600 border border-gray-200 hover:border-transparent rounded-xl transition-all duration-300 shadow-lg shadow-gray-100 hover:shadow-xl transform hover:-translate-y-0.5"
+              className="group flex items-center space-x-2 px-6 py-3 text-xs md:text-sm font-medium text-gray-600 hover:text-white bg-white/50 hover:bg-gradient-to-r hover:bg-navy-800 border border-gray-200 hover:border-transparent rounded-xl transition-all duration-300 shadow-lg shadow-gray-100 hover:shadow-xl transform hover:-translate-y-0.5"
             >
               <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
               <span className="">Back to Edit</span>
@@ -79,13 +79,13 @@ const JobPostingPreview = ({ formData, setIsPreview }) => {
 
                 {/* Tags Section */}
                 <div className="flex flex-wrap gap-3 mt-6 md:mt-0">
-                  <span className="px-4 py-2 bg-blue-50 text-sm text-blue-700 font-semibold rounded-full border border-blue-200">
+                  <span className="px-4 py-2 bg-saffron-100 text-sm text-navy-900 font-semibold rounded-full border border-sand">
                     {
                       CATEGORIES.find((c) => c.value === formData.category)
                         ?.label
                     }
                   </span>
-                  <span className="px-4 py-2 bg-purple-50 text-sm text-purple-700 font-semibold rounded-full border border-purple-200">
+                  <span className="px-4 py-2 bg-saffron-100 text-sm text-navy-900 font-semibold rounded-full border border-sand">
                     {JOB_TYPES.find((j) => j.value === formData.jobType)?.label}
                   </span>
                   <div className="flex items-center space-x-1 px-4 py-2 bg-gray-50 text-sm text-gray-700 font-semibold rounded-full border border-gray-200">
@@ -105,7 +105,7 @@ const JobPostingPreview = ({ formData, setIsPreview }) => {
                       <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       <div className="p-3 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl">
-                        < DollarSign className="h-4 md:h-6 w-4 md:w-6 text-white" />
+                        <IndianRupee className="h-4 md:h-6 w-4 md:w-6 text-white" />
                         </div>
                       <div>
                         <h3 className="text-sm font-semibold text-gray-900 mb-1">
@@ -117,13 +117,13 @@ const JobPostingPreview = ({ formData, setIsPreview }) => {
                               (c) => c.value === formData.currency
                             )?.label
                           }
-                          {formData.salaryMin.toLocaleString()} -{" "}
+                          {Number(formData.salaryMin).toLocaleString("en-IN")} -{" "}
                           {
                             currencies.find(
                               (c) => c.value === formData.currency
                             )?.label
                           }
-                          {formData.salaryMax.toLocaleString()}
+                          {Number(formData.salaryMax).toLocaleString("en-IN")}
                           <span className="text-sm md:text-lg text-gray-600 font-normal ml-1">
                             Per Year
                           </span>
@@ -141,7 +141,7 @@ const JobPostingPreview = ({ formData, setIsPreview }) => {
               {/* Job Description */}
               <div className="space-y-4">
                 <h3 className="text-2xl font-bold text-gray-900 flex items-center space-x-3">
-                  <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-purple-600 rounded-full"></div>
+                  <div className="w-1 h-8 bg-navy-900 rounded-full"></div>
                   <span className="text-base md:text-lg">About This Role</span>
                 </h3>
                 <div className="bg-gray-50 border border-gray-100 rounded-xl p-6">
@@ -154,10 +154,10 @@ const JobPostingPreview = ({ formData, setIsPreview }) => {
                   {/* Requirements Section */}
                   <div className="space-y-4">
                     <h3 className="text-2xl font-bold text-gray-900 flex items-center space-x-3">
-                      <div className="w-1 h-8 bg-gradient-to-b from-purple-500 to-pink-600 rounded-full"></div>
+                      <div className="w-1 h-8 bg-navy-900 rounded-full"></div>
                       <span className="text-base md:text-lg">What We're Looking For</span>
                     </h3>
-                    <div className="bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-100 rounded-xl p-6">
+                    <div className="bg-saffron-100 border border-sand rounded-xl p-6">
                       <div className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap"
                       >
                         {formData.requirements}

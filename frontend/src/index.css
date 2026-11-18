@@ -21,6 +21,15 @@
 }
 
 @layer base {
+  /* Tailwind v4 draws borders in the text colour by default; use the warm sand */
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-sand);
+  }
+
   html {
     font-family: var(--font-sans);
   }

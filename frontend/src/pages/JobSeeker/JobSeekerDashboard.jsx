@@ -27,7 +27,8 @@ const JobSeekerDashboard = () => {
 
   // Filter States
   const [filters, setFilters] = useState({
-    keyword: "",
+    // the home page search sends ?q=
+    keyword: new URLSearchParams(window.location.search).get("q") || "",
     location: "",
     category: "",
     type: "",

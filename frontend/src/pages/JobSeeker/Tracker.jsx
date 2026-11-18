@@ -29,7 +29,7 @@ import { API_PATHS } from "../../utils/apiPaths";
 // Column colours, in board order
 const STAGE_STYLES = {
   Saved: { dot: "bg-gray-400", ring: "ring-gray-300" },
-  Applied: { dot: "bg-blue-500", ring: "ring-blue-300" },
+  Applied: { dot: "bg-navy-900", ring: "ring-saffron-400" },
   Interview: { dot: "bg-amber-500", ring: "ring-amber-300" },
   Offer: { dot: "bg-green-500", ring: "ring-green-300" },
   Rejected: { dot: "bg-red-400", ring: "ring-red-300" },
@@ -159,7 +159,7 @@ const TrackerModal = ({ item, stages, onClose, onSaved }) => {
     }
   };
 
-  const input = "w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200";
+  const input = "w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-saffron-400";
 
   return (
     <div className="fixed inset-0 z-[60] bg-black/40 flex items-center justify-center p-4" onClick={onClose}>
@@ -231,7 +231,7 @@ const TrackerModal = ({ item, stages, onClose, onSaved }) => {
               </button>
             )}
             {form.url && (
-              <a href={form.url} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-sm text-blue-600 hover:bg-blue-50 px-3 py-2 rounded-xl">
+              <a href={form.url} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-sm text-navy-900 hover:bg-saffron-100 px-3 py-2 rounded-xl">
                 <ExternalLink className="w-4 h-4" /> Open job
               </a>
             )}
@@ -239,7 +239,7 @@ const TrackerModal = ({ item, stages, onClose, onSaved }) => {
           <button
             type="submit"
             disabled={saving}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-5 py-2.5 rounded-xl font-semibold text-sm disabled:opacity-60"
+            className="bg-navy-900 text-white px-5 py-2.5 rounded-xl font-semibold text-sm disabled:opacity-60"
           >
             {saving ? "Saving..." : item ? "Save" : "Add job"}
           </button>
@@ -297,7 +297,7 @@ const Tracker = () => {
   const stats = data.stats;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen bg-cream">
       <Navbar />
       <div className="container mx-auto px-4 pt-24 pb-12">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
@@ -309,7 +309,7 @@ const Tracker = () => {
           </div>
           <button
             onClick={() => setModal("new")}
-            className="flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-5 py-2.5 rounded-xl font-semibold text-sm"
+            className="flex items-center justify-center gap-2 bg-navy-900 text-white px-5 py-2.5 rounded-xl font-semibold text-sm"
           >
             <Plus className="w-4 h-4" /> Add job
           </button>

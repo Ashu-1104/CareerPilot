@@ -308,3 +308,26 @@ exports.runJobImport = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+// @desc   Live numbers for the home page: open jobs, companies hiring, sources
+// @route  GET /api/jobs/stats
+exports.getJobStats = async (req, res) => {
+    try {
+        const open = { isClosed: false };
+        const [openJobs, postedHere, importedCompanies, postingEmployers, sources] = await Promise.all([
+            Job.countDocuments(open),
+            Job.countDocuments({ ...open, source: 'careerpilot' }),
+            Job.distinct('companyName', { ...open, source: { $ne: 'careerpilot' } }),
+            Job.distinct('company', { ...open, source: 'careerpilot' }),
+            Job.distinct('source', { ...open, source: { $ne: 'careerpilot' } }),
+        ]);
+        res.json({
+            openJobs,
+            postedHere,
+            companies: importedCompanies.length + postingEmployers.length,
+            sources: sources.length,
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};

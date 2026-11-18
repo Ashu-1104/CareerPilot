@@ -34,7 +34,7 @@ const ScheduleInterviewModal = ({ application, onClose, onScheduled }) => {
     }
   };
 
-  const input = "w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200";
+  const input = "w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-saffron-400";
 
   return (
     <div className="fixed inset-0 z-[60] bg-black/40 flex items-center justify-center p-4" onClick={onClose}>
@@ -71,7 +71,7 @@ const ScheduleInterviewModal = ({ application, onClose, onScheduled }) => {
             </div>
           ))}
           {slots.length < 5 && (
-            <button type="button" onClick={() => setSlots((prev) => [...prev, ""])} className="flex items-center gap-1.5 text-sm text-blue-600 font-medium">
+            <button type="button" onClick={() => setSlots((prev) => [...prev, ""])} className="flex items-center gap-1.5 text-sm text-navy-900 font-medium">
               <Plus className="w-4 h-4" /> Add another slot
             </button>
           )}
@@ -105,7 +105,7 @@ const ScheduleInterviewModal = ({ application, onClose, onScheduled }) => {
         </label>
 
         <div className="flex justify-end">
-          <button disabled={saving} className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-5 py-2.5 rounded-xl font-semibold text-sm disabled:opacity-60">
+          <button disabled={saving} className="bg-navy-900 text-white px-5 py-2.5 rounded-xl font-semibold text-sm disabled:opacity-60">
             {saving ? "Sending..." : "Send invitation"}
           </button>
         </div>

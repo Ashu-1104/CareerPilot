@@ -74,8 +74,8 @@ const ApplicantProfilPreview = ({
                 className="h-20 w-20 rounded-full object-cover mx-auto"
               />
             ) : (
-              <div className="h-20 w-20 rounded-full bg-blue-100 flex items-center justify-center mx-auto">
-                <span className="text-blue-600 font-semibold text-xl">
+              <div className="h-20 w-20 rounded-full bg-saffron-100 flex items-center justify-center mx-auto">
+                <span className="text-navy-900 font-semibold text-xl">
                   {getInitials(applicant?.name || "A")}
                 </span>
               </div>
@@ -118,7 +118,7 @@ const ApplicantProfilPreview = ({
             {applicant?.resume ? (
               <button
                 onClick={() => handleDownloadResume(applicant.resume)}
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-navy-900 text-white font-medium rounded-lg hover:bg-navy-800 transition-colors"
               >
                 <Download className="h-4 w-4" />
                 Download Resume
@@ -138,7 +138,7 @@ const ApplicantProfilPreview = ({
                 value={currentStatus}
                 onChange={onChangeStatus}
                 disabled={loading}
-                className="w-full border border-gray-300 rounded-lg p-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-lg p-2 focus:ring-saffron-400 focus:border-navy-900"
               >
                 {statusOptions.map((status) => (
                   <option key={status} value={status}>

@@ -114,7 +114,7 @@ const EmployerProfilePage = () => {
         <div className="max-w-4xl mx-auto">
           <div className="bg-white rounded-xl shadow-lg overflow-hidden">
             {/* Header Section */}
-            <div className="bg-gradient-to-r from-blue-500 to-blue-600 px-8 py-6 flex justify-between items-center">
+            <div className="bg-navy-900 px-8 py-6 flex justify-between items-center">
               <h1 className="text-xl font-medium text-white">
                 Employer Profile
               </h1>
@@ -141,7 +141,7 @@ const EmployerProfilePage = () => {
                     <img
                       src={profileData.avatar}
                       alt="Avatar"
-                      className="w-20 h-20 rounedd-full object-cover border-4 border-blue-50"
+                      className="w-20 h-20 rounedd-full object-cover border-4 border-sand"
                     />
                     <div>
                       <h3 className="text-lg font-semibold text-gray-800">
@@ -166,7 +166,7 @@ const EmployerProfilePage = () => {
                     <img
                       src={profileData.companyLogo}
                       alt="Company Logo"
-                      className="w-20 h-20 rounded-lg object-cover border-4 border-blue-50"
+                      className="w-20 h-20 rounded-lg object-cover border-4 border-sand"
                     />
                     <div>
                       <h3 className="text-lg font-semibold text-gray-800">

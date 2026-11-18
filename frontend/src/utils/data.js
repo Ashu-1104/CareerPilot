@@ -17,54 +17,54 @@ import {
 export const jobSeekerFeatures = [
     {
         icon: Search,
-        title: "Smart Job Matching",
+        title: "Resume match on every job",
         description:
-            "AI-driven algorithms to match you with jobs that fit your skills and preferences.",
+            "Upload your resume once. Every job shows how many of its skills you already have, and which ones you are missing.",
+    },
+    {
+        icon: Briefcase,
+        title: "Live jobs from company sites",
+        description:
+            "Roles from the career pages of Indian companies and remote job boards, refreshed every day, next to jobs posted here.",
     },
     {
         icon: FileText,
-        title: "Resume Builder",
+        title: "Application tracker and AI cover letters",
         description:
-            "Create a professional resume with our easy-to-use builder and templates.",
+            "Track every application on one board, with follow-up reminders, and get a cover letter written from your skills.",
     },
     {
         icon: MessageSquare,
-        title: "Direct Messaging",
+        title: "Chat and interviews",
         description:
-            "Communicate directly with employers through our integrated messaging system.",
-    },
-    {
-        icon: Award,
-        title: "Skill Assessments",
-        description:
-            "Take skill tests to showcase your abilities to potential employers.",
+            "Message employers about your application and pick an interview time from the slots they offer.",
     },
 ];
 
 export const employerFeatures = [
     {
         icon: Users,
-        title: "Talent Pool Access",
+        title: "Review applicants",
         description:
-            " Browse a vast database of qualified candidates to find the perfect fit for your job openings.",
-    },
-    {
-        icon: BarChart3,
-        title: "Advanced Analytics",
-        description:
-            " Gain insights into your job postings' performance and candidate engagement with our analytics tools.",
-    },
-    {
-        icon: Shield,
-        title: "Secure Hiring Process",
-        description:
-            " Ensure a safe and compliant hiring process with our security features and guidelines.",
+            "See everyone who applied, their profile and resume, and move them from Applied to In Review, Accepted or Rejected.",
     },
     {
         icon: Clock,
-        title: "Efficient Workflow",
+        title: "Schedule interviews",
         description:
-            " Streamline your recruitment process with tools designed to save you time and effort.",
+            "Offer up to five time slots; the candidate picks one and both of you get it on your Interviews page.",
+    },
+    {
+        icon: MessageSquare,
+        title: "Live notifications and chat",
+        description:
+            "New applications and messages appear the moment they arrive, and you can reply to candidates right away.",
+    },
+    {
+        icon: BarChart3,
+        title: "Hiring analytics",
+        description:
+            "Track active jobs, applications and hires over time from your dashboard.",
     },
 ];
 

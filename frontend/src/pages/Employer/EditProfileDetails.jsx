@@ -21,7 +21,7 @@ const EditProfileDetails = ({
           <div className="max-w-4xl mx-auto">
             <div className="bg-white rounded-xl shadow-lg overflow-hidden">
               {/* Header */}
-              <div className="bg-gradient-to-r from-blue-500 to-blue-600 px-8 py-6">
+              <div className="bg-navy-900 px-8 py-6">
                 <h1 className="text-lg md:text-xl font-medium text-white">
                   Edit Profile
                 </h1>
@@ -57,7 +57,7 @@ const EditProfileDetails = ({
                             type="file"
                             accept="image/*"
                             onChange={(e) => handleImageChange(e, "avatar")}
-                            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100
+                            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-saffron-100 file:text-navy-900 hover:file:bg-saffron-100
                               transition-colors"
                           />
                         </label>
@@ -75,7 +75,7 @@ const EditProfileDetails = ({
                         onChange={(e) =>
                           handleInputChange("name", e.target.value)
                         }
-                        className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                        className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-saffron-400 focus:border-transparent
                           transition-all"
                         placeholder="Enter Your Full Name"
                       />
@@ -122,7 +122,7 @@ const EditProfileDetails = ({
                             type="file"
                             accept="image/*"
                             onChange={(e) => handleImageChange(e, "logo")}
-                            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-green-700 hover:file:bg-green-100
+                            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-saffron-100 file:text-green-700 hover:file:bg-green-100
                               transition-colors"
                           />
                         </label>
@@ -140,7 +140,7 @@ const EditProfileDetails = ({
                         onChange={(e) =>
                           handleInputChange("companyName", e.target.value)
                         }
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saffron-400 focus:border-transparent
                           transition-all"
                         placeholder="Enter Company Name"
                       />
@@ -160,7 +160,7 @@ const EditProfileDetails = ({
                           )
                         }
                         rows={4}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-saffron-400 focus:border-transparent
                           transition-all resize-none"
                         placeholder="Describe your company.."
                       />
@@ -180,7 +180,7 @@ const EditProfileDetails = ({
                   <button
                   onClick={handleSave}
                   disabled={saving || uploading.avatar || uploading.logo}
-                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed "
+                  className="px-6 py-3 bg-navy-900 text-white rounded-lg hover:bg-navy-800 transition-colors flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed "
                 >
                   {saving ? (
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin "></div>

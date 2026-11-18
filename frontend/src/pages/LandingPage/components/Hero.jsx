@@ -1,119 +1,99 @@
 // global Imports
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Search, ArrowRight, Users, Building2, TrendingUp } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 // Local Imports
 import { useAuth } from "../../../context/AuthContext";
+import axiosInstance from "../../../utils/axiosInstance";
+import { API_PATHS } from "../../../utils/apiPaths";
 
 const Hero = () => {
-  const {user, isAuthenticated} = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const [keyword, setKeyword] = useState("");
+  const [stats, setStats] = useState(null);
 
-  const stats = [
-    { icon: Users, value: "1.2M+", label: "Active Users" },
-    { icon: Building2, value: "50K+", label: "Companies" },
-    { icon: TrendingUp, value: "150K+", label: "Jobs Posted" },
-  ];
+  // live numbers from the database (no made-up figures)
+  useEffect(() => {
+    axiosInstance.get(API_PATHS.JOBS.STATS).then((r) => setStats(r.data)).catch(() => {});
+  }, []);
+
+  const search = (e) => {
+    e.preventDefault();
+    // the job list reads ?q= to prefill its search box
+    navigate(`/find-jobs${keyword ? `?q=${encodeURIComponent(keyword)}` : ""}`);
+  };
 
   return (
-    <section className="pt-24 pb-16 bg-white min-h-screen flex items-center">
-      <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          {/* Main Heading */}
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight pt-10"
-          >
-            Find Your Dream Job or
-            <span className="block bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mt-2">
-              Perfect Hire
-            </span>
-          </motion.h1>
+    <section className="bg-navy-900 text-white pt-32 pb-24 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-5xl mx-auto">
+        <motion.h1
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-4xl sm:text-6xl font-bold leading-[1.05] max-w-4xl"
+        >
+          Find a job that fits <span className="text-saffron-400">your skills</span>, not just your search.
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="mt-5 text-lg text-navy-100 max-w-2xl"
+        >
+          CareerPilot reads your resume, shows how well you match every job, and keeps your whole job hunt in one
+          place: live roles from Indian company career pages, an application tracker, chat with employers and interview
+          scheduling.
+        </motion.p>
 
-          {/* Subheading */}
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-xl md:text-xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed"
-          >
-            Connecting Talent with Opportunity. Your Next Career Move Starts
-            Here.
-          </motion.p>
+        <motion.form
+          onSubmit={search}
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mt-8 bg-white rounded-[20px] overflow-hidden flex flex-col sm:flex-row max-w-3xl"
+        >
+          <label className="flex-1 px-5 py-3.5 text-xs font-semibold text-stone-500 tracking-wide">
+            WHAT ARE YOU LOOKING FOR?
+            <input
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              placeholder="React developer, data analyst, Paytm..."
+              className="block w-full text-lg font-semibold text-stone-900 placeholder:text-stone-400 placeholder:font-normal outline-none mt-0.5"
+            />
+          </label>
+          <button className="min-h-[60px] sm:min-h-[76px] px-8 bg-saffron-400 hover:bg-saffron-500 text-navy-900 font-bold flex items-center justify-center gap-2">
+            Find jobs <ArrowRight className="w-5 h-5" />
+          </button>
+        </motion.form>
 
-          {/* Call-to-Action Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
+        <div className="mt-6 flex flex-wrap gap-3 text-sm">
+          <button
+            onClick={() => navigate(isAuthenticated && user?.role === "employer" ? "/post-job" : "/signup")}
+            className="h-11 px-5 rounded-full border border-navy-800 text-navy-100 hover:bg-navy-800 font-semibold"
           >
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className=" cursor-pointer group bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center space-x-2"
-              onClick={() => navigate("/find-jobs")}
-            >
-              <Search className="w-5 h-5" />
-              <span>Find Jobs</span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </motion.button>
-
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="cursor-pointer bg-white border-2 border-gray-200 text-gray-700 px-8 py-4 rounded-xl font-semibold text-lg hover:border-gray-300 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow-md"
-              onClick={() => {
-                navigate(
-                  isAuthenticated && user?.role === "employer"
-                    ? "/employer-dashboard"
-                    : "/login"
-                );
-              }}
-            >
-              Post a Job
-            </motion.button>
-          </motion.div>
-
-          {/* Stats Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-2xl mx-auto"
-          >
-            {stats.map((stat, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 + index * 0.1, duration: 0.6 }}
-                className="flex flex-col items-center space-y-2 p-4 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer"
-              >
-                <div className="w-12 h-12 bg-gradient-to-r from-blue-100 to-purple-100 rounded-xl flex items-center justify-center mb-2">
-                  <stat.icon className="w-6 h-6 text-blue-600" />
-                </div>
-                <div className="text-2xl font-bold text-gray-900">
-                  {stat.value}
-                </div>
-                <div className="text-sm text-gray-600 font-medium ">
-                  {stat.label}
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
+            I'm hiring: post a job
+          </button>
         </div>
-      </div>
 
-      {/* Subtle Background Graphic */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-32 h-32 bg-blue-100 rounded-full blur-3xl opacity-30" />
-        <div className="absolute bottom-20 right-10 w-40 h-40 bg-purple-100 rounded-full blur-3xl opacity-30" />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-blue-50 to-purple-50 rounded-full blur-3xl opacity-20" />
+        {stats && (
+          <dl className="mt-14 grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-3xl">
+            {[
+              [stats.openJobs, "open jobs right now"],
+              [stats.companies, "companies hiring"],
+              [stats.sources, "job sources checked daily"],
+              [stats.postedHere, "posted on CareerPilot"],
+            ].map(([value, label]) => (
+              <div key={label}>
+                <dt className="sr-only">{label}</dt>
+                <dd className="font-display text-4xl font-bold text-saffron-400">{value}</dd>
+                <dd className="text-sm text-navy-100 mt-1">{label}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
       </div>
     </section>
   );
