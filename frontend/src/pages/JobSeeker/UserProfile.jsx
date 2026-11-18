@@ -68,6 +68,48 @@ const ResumeSkills = ({ resume }) => {
   );
 };
 
+// Daily in-app alert about new jobs that match the resume (on by default).
+const JobAlertsToggle = () => {
+  const { user, updateUser } = useAuth();
+  const enabled = typeof user?.jobAlerts === "boolean" ? user.jobAlerts : user?.jobAlerts?.enabled !== false;
+  const [saving, setSaving] = useState(false);
+
+  const toggle = async () => {
+    setSaving(true);
+    try {
+      const { data } = await axiosInstance.put(API_PATHS.AUTH.UPDATE_PROFILE, { jobAlerts: !enabled });
+      updateUser({ ...user, jobAlerts: data.jobAlerts });
+      toast.success(data.jobAlerts ? "Job alerts turned on" : "Job alerts turned off");
+    } catch {
+      toast.error("Could not change job alerts. Try again.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="flex items-center justify-between gap-4 bg-white border border-sand rounded-2xl p-5">
+      <div>
+        <p className="font-display font-bold text-stone-900">Daily job alerts</p>
+        <p className="text-sm text-stone-600 mt-1">
+          Every morning, a notification when new jobs match your resume 70% or better.
+        </p>
+      </div>
+      <button
+        type="button"
+        role="switch"
+        aria-checked={enabled}
+        aria-label="Daily job alerts"
+        onClick={toggle}
+        disabled={saving}
+        className={`relative w-12 h-7 rounded-full flex-shrink-0 transition-colors ${enabled ? "bg-navy-900" : "bg-stone-300"}`}
+      >
+        <span className={`absolute top-1 w-5 h-5 rounded-full bg-white transition-all ${enabled ? "left-6" : "left-1"}`} />
+      </button>
+    </div>
+  );
+};
+
 const UserProfile = () => {
   const { user, updateUser } = useAuth();
 
@@ -309,6 +351,7 @@ const UserProfile = () => {
                     )}
 
                     <ResumeSkills resume={user?.resume} />
+                    <JobAlertsToggle />
                       </div>
 
                     </div>

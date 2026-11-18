@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Search, Filter, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import moment from "moment";
 
 // Local Imports
 import LoadingSpinner from "../../components/LoadingSpinner";
@@ -49,6 +50,8 @@ const JobSeekerDashboard = () => {
   const [overview, setOverview] = useState(null);
   const [trackerStats, setTrackerStats] = useState(null);
   const [sort, setSort] = useState("match"); // "match" needs a resume; else newest
+  // from a job alert: only jobs added after this date (?new=...)
+  const [addedSince, setAddedSince] = useState(() => new URLSearchParams(window.location.search).get("new"));
 
   // Pagination: the API returns 20 jobs per page
   const [page, setPage] = useState(1);
@@ -77,6 +80,7 @@ const JobSeekerDashboard = () => {
       if (filterParams.source) params.append("source", filterParams.source);
       if (user) params.append("userId", user?._id);
       if (sort === "match") params.append("sort", "match");
+      if (addedSince) params.append("new", addedSince);
       params.append("page", pageToLoad);
 
       const response = await axiosInstance.get(
@@ -133,7 +137,7 @@ const JobSeekerDashboard = () => {
     }, 500); // Debounce API calls by 500ms
 
     return () => clearTimeout(timeoutId);
-  }, [filters, user, sort]);
+  }, [filters, user, sort, addedSince]);
 
   useEffect(() => {
     if (user?.role !== "jobSeeker") return;
@@ -306,6 +310,23 @@ const JobSeekerDashboard = () => {
                   </button>
                 </div>
               </div>
+
+              {addedSince && (
+                <div className="mb-5 bg-saffron-100 border border-saffron-400/40 rounded-2xl px-5 py-3 flex flex-wrap items-center justify-between gap-3">
+                  <p className="text-sm text-saffron-900">
+                    New jobs added since <b>{moment(addedSince).format("D MMM, h:mm A")}</b>, from your job alert.
+                  </p>
+                  <button
+                    onClick={() => {
+                      setAddedSince(null);
+                      window.history.replaceState(null, "", "/find-jobs");
+                    }}
+                    className="h-9 px-4 rounded-full bg-navy-900 text-white text-sm font-semibold"
+                  >
+                    Show all jobs
+                  </button>
+                </div>
+              )}
 
               {jobs.length === 0 && !loading ? (
                 <div className="text-center py-16 bg-white rounded-[20px] border border-sand">

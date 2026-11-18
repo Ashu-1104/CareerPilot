@@ -25,6 +25,11 @@ const userSchema = new mongoose.Schema({
     // skills read from the resume PDF (services/resumeParser.js); never sent to other users
     resumeSkills: { type: [String], default: undefined },
     resumeParsedAt: Date,
+    // daily in-app alert about new jobs that match the resume (services/jobAlerts.js)
+    jobAlerts: {
+        enabled: { type: Boolean, default: true },
+        lastSentAt: Date,
+    },
 
     // for employers
     companyName: String,

@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Bell, Briefcase, CalendarClock, MessageSquare, RefreshCw } from "lucide-react";
+import { Bell, Briefcase, CalendarClock, MessageSquare, RefreshCw, Sparkles } from "lucide-react";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 
 import { useNotifications } from "../hooks/useNotifications";
 
-const ICONS = { application: Briefcase, status: RefreshCw, message: MessageSquare, interview: CalendarClock };
+const ICONS = { application: Briefcase, status: RefreshCw, message: MessageSquare, interview: CalendarClock, alert: Sparkles };
 
 const NotificationBell = ({ dark = false }) => {
   const { items, unread, markAllRead } = useNotifications();

@@ -6,7 +6,7 @@ const { refreshResumeSkills } = require('../services/resumeParser');
 // @desc   Update user profile (name, avatar, company details)
 exports.updateProfile = async (req, res) => {
     try {
-        const { name, avatar, companyName, companyDescription, companyLogo, resume } = req.body;
+        const { name, avatar, companyName, companyDescription, companyLogo, resume, jobAlerts } = req.body;
         const user = await User.findById(req.user._id);
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
@@ -16,6 +16,7 @@ exports.updateProfile = async (req, res) => {
         user.name = name || user.name;
         user.avatar = avatar || user.avatar;
         user.resume = resume || user.resume;
+        if (typeof jobAlerts === 'boolean') user.set('jobAlerts.enabled', jobAlerts);
 
         // If employer, update company details
         if (user.role === 'employer') {
@@ -42,6 +43,7 @@ exports.updateProfile = async (req, res) => {
             companyDescription: user.companyDescription,
             companyLogo: user.companyLogo,
             resume: user.resume || "",
+            jobAlerts: user.jobAlerts?.enabled !== false,
         });
     } catch (err) {
         console.error('Error updating profile:', err);

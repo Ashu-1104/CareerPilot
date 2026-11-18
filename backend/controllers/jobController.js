@@ -4,6 +4,7 @@ const Application = require('../models/Application');
 const SavedJob = require('../models/SavedJob');
 const { SOURCE_INFO } = require('../services/jobSources');
 const { importJobs } = require('../services/jobImport');
+const { sendJobAlerts } = require('../services/jobAlerts');
 const { matchScore } = require('../services/skills');
 
 // The logged-in job seeker's match for a job (only their own; never from a query parameter).
@@ -64,6 +65,7 @@ exports.getJobs = async (req, res) => {
         maxSalary,
         userId,
         source, // "careerpilot" (posted here), "external" (imported) or empty for all
+        new: addedSince, // ISO date: only jobs added after it (links from job alerts)
     } = req.query;
     const page = Math.max(1, parseInt(req.query.page) || 1);
     const limit = Math.min(50, Math.max(1, parseInt(req.query.limit) || 20));
@@ -79,6 +81,7 @@ exports.getJobs = async (req, res) => {
         }),
         ...(location && { location: { $regex: locationPattern(location), $options: 'i' } }),
         ...(source === 'careerpilot' && { source: 'careerpilot' }),
+        ...(addedSince && !isNaN(new Date(addedSince)) && { createdAt: { $gt: new Date(addedSince) } }),
         ...(source === 'external' && { source: { $ne: 'careerpilot' } }),
         ...(category && { category }),
         ...(type && { type }),
@@ -303,7 +306,9 @@ exports.runJobImport = async (req, res) => {
         return res.status(401).json({ message: 'Not authorized' });
     }
     try {
-        res.json(await importJobs());
+        const report = await importJobs();
+        report.alerts = await sendJobAlerts();
+        res.json(report);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
