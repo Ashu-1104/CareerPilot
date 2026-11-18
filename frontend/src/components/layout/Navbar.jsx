@@ -1,7 +1,7 @@
 // Global Imports
 import React from "react";
 import { useState, useEffect } from "react";
-import { Briefcase, Bookmark } from "lucide-react";
+import { Briefcase, Bookmark, KanbanSquare } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
 // Local Imports
@@ -39,6 +39,16 @@ const Navbar = () => {
 
           {/* Auth Buttons */}
           <div className="flex items-center space-x-3">
+            {user?.role === "jobSeeker" && (
+              <button
+                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-gray-100 transition-colors duration-200 text-sm font-medium text-gray-600"
+                onClick={() => navigate("/tracker")}
+                title="Application tracker"
+              >
+                <KanbanSquare className="h-5 w-5 text-gray-500" />
+                <span className="hidden sm:inline">Tracker</span>
+              </button>
+            )}
             {user && (
               <button
                 className="p-2 rounded-xl hover:bg-gray-100 transition-colors duration-200 relative"

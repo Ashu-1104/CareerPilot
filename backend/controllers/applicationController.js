@@ -1,5 +1,6 @@
 const Application = require("../models/Application");
 const Job = require("../models/Job");
+const { trackJob, syncFromApplication } = require("./trackerController");
 
 // @desc   Apply for a job
 exports.applyToJob = async (req, res) => {
@@ -31,6 +32,7 @@ exports.applyToJob = async (req, res) => {
             applicant: req.user._id,
             resume: req.user.resume, // assuming resume is stored in user profile 
         });
+        await trackJob(req.user._id, req.params.jobId, 'Applied');
 
         res.status(201).json(application);
     } catch (error) {
@@ -105,6 +107,7 @@ exports.updateStatus = async (req, res) => {
 
         app.status = status;
         await app.save();
+        await syncFromApplication(app);
 
         res.json({ message: 'Application status updated', status });
     } catch (err) {

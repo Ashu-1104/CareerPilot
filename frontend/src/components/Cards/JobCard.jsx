@@ -6,6 +6,7 @@ import moment from "moment";
 // Local Imports
 import { useAuth } from "../../context/AuthContext";
 import StatusBadge from "../StatusBadge";
+import { trackExternalApply } from "../../utils/helper";
 
 const JobCard = ({ job, onClick, onToggleSave, onApply, saved, hideApply }) => {
 
@@ -118,7 +119,10 @@ const JobCard = ({ job, onClick, onToggleSave, onApply, saved, hideApply }) => {
                                 href={job.applyUrl}
                                 target="_blank"
                                 rel="noreferrer"
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (user?.role === "jobSeeker") trackExternalApply(job._id);
+                                }}
                                 className="flex items-center gap-1.5 bg-gradient-to-r from-blue-50 to-blue-50 text-sm text-blue-700 hover:text-white px-5 py-2.5 rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-300 font-semibold"
                             >
                                 Apply on site

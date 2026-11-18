@@ -13,6 +13,12 @@ export const API_PATHS = {
         OVERVIEW: `/api/analytics/overview`, // Get dashboard overview data
     },
 
+    TRACKER: {
+        GET: "/api/tracker", // Tracked jobs and stats
+        ADD: "/api/tracker", // Track a job ({ jobId } or a job from another site)
+        UPDATE: (id) => `/api/tracker/${id}`, // Move to another stage / edit
+        DELETE: (id) => `/api/tracker/${id}`, // Remove from the tracker
+    },
     JOBS: {
         GET_ALL_JOBS: "/api/jobs", // Get all job listings
         GET_JOB_BY_ID: (id) => `/api/jobs/${id}`, // Get job details by ID

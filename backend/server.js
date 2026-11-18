@@ -12,6 +12,7 @@ const jobRoutes = require("./routes/jobRoutes");
 const applicationRoutes = require("./routes/applicationRoutes");
 const savedJobsRoutes = require("./routes/savedJobsRoutes");
 const analyticsRoutes = require("./routes/analyticsRoutes");
+const trackerRoutes = require("./routes/trackerRoutes");
 
 const app = express();
 
@@ -19,7 +20,7 @@ const app = express();
 app.use(
     cors({
         origin: "*", // Allow all origins (adjust as needed for security)
-        methods: ["GET", "POST", "PUT", "DELETE"],
+        methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
         allowedHeaders: ["Content-Type", "Authorization"],
     })
 )
@@ -37,6 +38,7 @@ app.use('/api/jobs', jobRoutes);
 app.use("/api/applications", applicationRoutes);
 app.use("/api/save-jobs", savedJobsRoutes);
 app.use("/api/analytics", analyticsRoutes);
+app.use("/api/tracker", trackerRoutes);
 
 // serve uploads folder 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {}));

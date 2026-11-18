@@ -12,6 +12,7 @@ import axiosInstance from "../../utils/axiosInstance";
 import { API_PATHS } from "../../utils/apiPaths";
 import Navbar from "../../components/layout/Navbar";
 import StatusBadge from "../../components/StatusBadge";
+import { trackExternalApply } from "../../utils/helper";
 
 const JobDetails = () => {
   const { user } = useAuth();
@@ -120,6 +121,7 @@ const JobDetails = () => {
                       href={jobDetails.applyUrl}
                       target="_blank"
                       rel="noreferrer"
+                      onClick={() => user?.role === "jobSeeker" && trackExternalApply(jobDetails._id)}
                       className="flex items-center gap-1.5 bg-gradient-to-r from-blue-50 to-blue-50 text-sm text-blue-700 hover:text-white px-6 py-2.5 rounded-xl hover:from-blue-500 hover:to-blue-600 transition-all duration-200 font-semibold"
                     >
                       Apply on company site

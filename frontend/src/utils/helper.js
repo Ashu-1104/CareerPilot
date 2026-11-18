@@ -1,3 +1,6 @@
+import axiosInstance from "./axiosInstance";
+import { API_PATHS } from "./apiPaths";
+
 // Validation Functions
 export const validateEmail = (email) => {
     if (!email.trim()) return "Email is required.";
@@ -45,4 +48,9 @@ export const getInitials = (name) => {
         .join("")
         .toUpperCase()
         .slice(0, 2);
+};
+// Opening an imported job's company site counts as applying: add it to the
+// seeker's tracker as "Applied" (fire and forget; the link opens either way).
+export const trackExternalApply = (jobId) => {
+    axiosInstance.post(API_PATHS.TRACKER.ADD, { jobId, stage: "Applied" }).catch(() => {});
 };
