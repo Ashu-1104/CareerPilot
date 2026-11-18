@@ -34,6 +34,7 @@ const JobSeekerDashboard = () => {
     type: "",
     minSalary: "",
     maxSalary: "",
+    source: "",
   });
 
   // Sidebar collapse states
@@ -41,10 +42,16 @@ const JobSeekerDashboard = () => {
     jobType: true,
     salary: true,
     categories: true,
+    source: true,
   });
 
+  // Pagination: the API returns 20 jobs per page
+  const [page, setPage] = useState(1);
+  const [totalJobs, setTotalJobs] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
+
   // Functions to fetch jobs from API
-  const fetchJobs = async (filterParams = {}) => {
+  const fetchJobs = async (filterParams = {}, pageToLoad = 1) => {
     try {
       setLoading(true);
       setError(null);
@@ -62,7 +69,9 @@ const JobSeekerDashboard = () => {
       if (filterParams.category)
         params.append("category", filterParams.category);
       if (filterParams.type) params.append("type", filterParams.type);
+      if (filterParams.source) params.append("source", filterParams.source);
       if (user) params.append("userId", user?._id);
+      params.append("page", pageToLoad);
 
       const response = await axiosInstance.get(
         `${API_PATHS.JOBS.GET_ALL_JOBS}?${params.toString()}`
@@ -72,7 +81,11 @@ const JobSeekerDashboard = () => {
         ? response.data
         : response.data.jobs || [];
 
-      setJobs(jobsData);
+      // page 1 replaces the list, later pages are appended ("Load more")
+      setJobs((prev) => (pageToLoad === 1 ? jobsData : [...prev, ...jobsData]));
+      setPage(pageToLoad);
+      setTotalJobs(response.data.total ?? jobsData.length);
+      setHasMore(pageToLoad < (response.data.pages || 1));
     } catch (err) {
       console.error("Error fetching jobs:", err);
       setError("Failed to load jobs. Please try again later.");
@@ -94,6 +107,7 @@ const JobSeekerDashboard = () => {
         type: filters.type,
         experience: filters.experience,
         remoteOnly: filters.remoteOnly,
+        source: filters.source,
       };
 
       // Only call API if there are meaningful filter
@@ -134,6 +148,7 @@ const JobSeekerDashboard = () => {
       type: "",
       minSalary: "",
       maxSalary: "",
+      source: "",
     });
   };
 
@@ -246,6 +261,10 @@ const JobSeekerDashboard = () => {
                     <span className="font-bold text-gray-900">
                       {jobs.length}
                     </span>{" "}
+                    of{" "}
+                    <span className="font-bold text-gray-900">
+                      {totalJobs}
+                    </span>{" "}
                     Jobs
                   </p>
                 </div>
@@ -325,6 +344,18 @@ const JobSeekerDashboard = () => {
                       />
                     ))}
                   </div>
+
+                  {hasMore && (
+                    <div className="flex justify-center mt-8">
+                      <button
+                        onClick={() => fetchJobs(filters, page + 1)}
+                        disabled={loading}
+                        className="bg-white border border-gray-200 text-gray-700 px-6 py-3 rounded-xl font-semibold hover:bg-gray-50 transition-colors disabled:opacity-60"
+                      >
+                        {loading ? "Loading..." : "Load more jobs"}
+                      </button>
+                    </div>
+                  )}
                 </>
               )}
             </div>

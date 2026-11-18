@@ -98,6 +98,12 @@ export const JOB_TYPES = [
     { value: "Remote", label: "Remote" },
 ];
 
+// Where a job comes from: posted by an employer here, or imported from job boards
+export const JOB_SOURCES = [
+    { value: "careerpilot", label: "Posted on CareerPilot" },
+    { value: "external", label: "Company sites & job boards" },
+];
+
 export const SALARY_RANGES = [
     "Less then $1000",
     "$1000 - $3000",

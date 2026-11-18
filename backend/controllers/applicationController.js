@@ -8,6 +8,15 @@ exports.applyToJob = async (req, res) => {
             return res.status(403).json({ message: 'Only jobSeekers can apply for jobs' });
         }
 
+        const job = await Job.findById(req.params.jobId).select('source applyUrl isClosed');
+        if (!job || job.isClosed) {
+            return res.status(404).json({ message: 'This job is no longer open' });
+        }
+        if (job.source !== 'careerpilot') {
+            // imported jobs are applied for on the company's own site
+            return res.status(400).json({ message: 'Apply for this job on the company site', applyUrl: job.applyUrl });
+        }
+
         const existing = await Application.findOne({
             job: req.params.jobId,
             applicant: req.user._id,
@@ -25,7 +34,7 @@ exports.applyToJob = async (req, res) => {
 
         res.status(201).json(application);
     } catch (error) {
-        res.status(500).json({ message: err.message });
+        res.status(500).json({ message: error.message });
     }
 };
 

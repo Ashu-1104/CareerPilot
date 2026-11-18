@@ -1,6 +1,6 @@
 // global React
 import React from "react";
-import { MapPin, DollarSign, Building2, Clock, Users } from "lucide-react";
+import { MapPin, DollarSign, Building2, Clock, Users, ExternalLink } from "lucide-react";
 import { useEffect, useState } from "react";
 import moment from "moment";
 import toast from "react-hot-toast";
@@ -18,6 +18,7 @@ const JobDetails = () => {
   const { jobId } = useParams();
 
   const [jobDetails, setJobDetails] = useState(null);
+  const isExternal = jobDetails?.source && jobDetails.source !== "careerpilot";
 
   const getJobDetailsById = async () => {
     try {
@@ -90,11 +91,40 @@ const JobDetails = () => {
                           {jobDetails.location}
                         </span>
                       </div>
+                      <div className="flex items-center space-x-2">
+                        <Building2 className="h-4 w-4" />
+                        <span className="text-sm font-semibold">
+                          {jobDetails?.company?.companyName}
+                        </span>
+                      </div>
+                      {isExternal && (
+                        <span className="text-sm">
+                          via{" "}
+                          {jobDetails.sourceInfo?.url ? (
+                            <a href={jobDetails.sourceInfo.url} target="_blank" rel="noreferrer" className="underline">
+                              {jobDetails.sourceInfo.name}
+                            </a>
+                          ) : (
+                            jobDetails.sourceInfo?.name
+                          )}
+                        </span>
+                      )}
                     </div>
                   </div>
 
                   {jobDetails?.applicationStatus ? (
                     <StatusBadge status={jobDetails.applicationStatus} />
+                  ) : isExternal ? (
+                    // imported jobs are applied for on the company's own site
+                    <a
+                      href={jobDetails.applyUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center gap-1.5 bg-gradient-to-r from-blue-50 to-blue-50 text-sm text-blue-700 hover:text-white px-6 py-2.5 rounded-xl hover:from-blue-500 hover:to-blue-600 transition-all duration-200 font-semibold"
+                    >
+                      Apply on company site
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
                   ) : (
                     <button
                       className="bg-gradient-to-r from-blue-50 to-blue-50 text-sm text-blue-700 hover:text-white px-6 py-2.5 rounded-xl hover:from-blue-500 hover:to-blue-600 transition-all duration-200 font-semibold transform hover:-translate-y-0.5"
@@ -116,8 +146,8 @@ const JobDetails = () => {
                   <div className="flex items-center space-x-1 px-4 py-2 bg-gray-50 text-sm text-gray-700 font-semibold rounded-full border border-gray-200">
                     <Clock className="h-4 w-4" />
                     <span>
-                      {jobDetails.createdAt
-                        ? moment(jobDetails.createdAt).format("DD MM YYYY")
+                      {jobDetails.postedAt || jobDetails.createdAt
+                        ? moment(jobDetails.postedAt || jobDetails.createdAt).format("DD MM YYYY")
                         : "N/A"}
                     </span>
                   </div>
@@ -141,10 +171,18 @@ const JobDetails = () => {
                           Compensation
                         </h3>
                         <div className="text-lg font-bold text-gray-900">
-                          {jobDetails.salaryMin} - {jobDetails.salaryMax}
-                          <span className="text-lg text-gray-600 font-normal ml-1">
-                            per year
-                          </span>
+                          {jobDetails.salaryMin || jobDetails.salaryMax ? (
+                            <>
+                              {jobDetails.salaryMin} - {jobDetails.salaryMax}
+                              <span className="text-lg text-gray-600 font-normal ml-1">
+                                per year
+                              </span>
+                            </>
+                          ) : (
+                            <span className="text-base text-gray-600 font-normal">
+                              Not disclosed
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -168,7 +206,8 @@ const JobDetails = () => {
                     </div>
                   </div>
 
-                  {/* Requirements Section */}
+                  {/* Requirements Section (imported jobs keep them in the description) */}
+                  {jobDetails.requirements && (
                   <div className="space-y-4">
                     <h3 className="text-2xl font-bold text-gray-900 flex items-center space-x-3">
                       <div className="w-1 h-8 bg-gradient-to-b from-purple-500 to-pink-600 rounded-full"></div>
@@ -180,6 +219,7 @@ const JobDetails = () => {
                       </div>
                     </div>
                   </div>
+                  )}
                 </div>
               </div>
             </div>

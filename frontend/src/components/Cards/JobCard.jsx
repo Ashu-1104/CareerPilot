@@ -1,6 +1,6 @@
 // Global Imports
 import React from "react";
-import { Bookmark, Building, Building2, Calendar, MapPin } from "lucide-react";
+import { Bookmark, Building, Building2, Calendar, ExternalLink, MapPin } from "lucide-react";
 import moment from "moment";
 
 // Local Imports
@@ -10,12 +10,14 @@ import StatusBadge from "../StatusBadge";
 const JobCard = ({ job, onClick, onToggleSave, onApply, saved, hideApply }) => {
 
     const { user } = useAuth();
+    const isExternal = job?.source && job.source !== "careerpilot";
     const formatSalary = (min, max) => {
+    if (!min && !max) return "Salary not disclosed";
     const formatNumber = (num) => {
         if (num >= 1000) return `$${(num / 1000).toFixed(0)}K`;
         return `$${num}`;
     };
-    return `${formatNumber(min)}/m`;
+    return `${formatNumber(min || max)}/m`;
     };
 
   return <div 
@@ -91,21 +93,38 @@ const JobCard = ({ job, onClick, onToggleSave, onApply, saved, hideApply }) => {
             <div className="flex items-center gap-4">
                 <span className="flex items-center gap-1.5">
                     <Calendar className="w-3.5 h-3.5" />
-                    {job?.createdAt
-                        ? moment(job.createdAt).format("DD MMM YYYY")
+                    {job?.postedAt || job?.createdAt
+                        ? moment(job.postedAt || job.createdAt).format("DD MMM YYYY")
                         : "N/A"}
                 </span>
+                {isExternal && (
+                    <span className="truncate">via {job?.sourceInfo?.name}</span>
+                )}
                 </div>
                 </div>
 
                 <div className="flex items-center justify-between">
-            <div className="text-blue-600 font-semibold text-lg">
+            <div className={`font-semibold ${job?.salaryMin || job?.salaryMax ? "text-blue-600 text-lg" : "text-gray-500 text-sm"}`}>
                 {formatSalary(job?.salaryMin, job?.salaryMax)}
                 </div>
                 {!saved && (
                     <>
                     {job?.applicationStatus ? (
                         <StatusBadge status={job?.applicationStatus} />
+                    ) : isExternal ? (
+                        !hideApply && (
+                            // imported jobs are applied for on the company's own site
+                            <a
+                                href={job.applyUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                onClick={(e) => e.stopPropagation()}
+                                className="flex items-center gap-1.5 bg-gradient-to-r from-blue-50 to-blue-50 text-sm text-blue-700 hover:text-white px-5 py-2.5 rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-300 font-semibold"
+                            >
+                                Apply on site
+                                <ExternalLink className="w-3.5 h-3.5" />
+                            </a>
+                        )
                     ) : (
                         !hideApply && (
                             <button

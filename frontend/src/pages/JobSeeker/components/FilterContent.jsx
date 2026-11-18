@@ -3,7 +3,7 @@ import React from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
 // Local Imports
-import { CATEGORIES, JOB_TYPES } from "../../../utils/data";
+import { CATEGORIES, JOB_SOURCES, JOB_TYPES } from "../../../utils/data";
 import SalaryRangeSlider from "../../../components/Input/SalaryRangeSlider";
 
 const FilterSection = ({ title, isExpanded, onToggle, children }) => (
@@ -40,6 +40,33 @@ const FilterContent = ({
           Clear All
         </button>
       </div>
+
+      <FilterSection
+        title="Source"
+        isExpanded={expandedSections?.source}
+        onToggle={() => toggleSection("source")}
+      >
+        <div className="space-y-3">
+          {JOB_SOURCES.map((source) => (
+            <label
+              key={source.value}
+              className="flex items-center cursor-pointer"
+            >
+              <input
+                type="checkbox"
+                className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                checked={filters?.source === source.value}
+                onChange={(e) =>
+                  handleFilterChange("source", e.target.checked ? source.value : "")
+                }
+              />
+              <span className="ml-3 text-gray-700 font-medium">
+                {source.label}
+              </span>
+            </label>
+          ))}
+        </div>
+      </FilterSection>
 
       <FilterSection
         title="Job Type"

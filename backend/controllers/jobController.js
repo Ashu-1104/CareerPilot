@@ -2,6 +2,22 @@ const Job = require('../models/Job');
 const User = require('../models/User');
 const Application = require('../models/Application');
 const SavedJob = require('../models/SavedJob');
+const { SOURCE_INFO } = require('../services/jobSources');
+const { importJobs } = require('../services/jobImport');
+
+const escapeRegex = (text) => String(text).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+// Imported jobs carry their company inline; give them the same `company` shape
+// as posted jobs, plus where they came from.
+const withCompany = (job) => {
+    const data = job.toObject ? job.toObject() : job;
+    if (data.source === 'careerpilot' || !data.source) return data;
+    return {
+        ...data,
+        company: { companyName: data.companyName, companyLogo: data.companyLogoUrl },
+        sourceInfo: SOURCE_INFO[data.source] || { name: data.source, url: null },
+    };
+};
 
 
 // @desc   Create a new job posting (Employer only)
@@ -28,12 +44,23 @@ exports.getJobs = async (req, res) => {
         minSalary,
         maxSalary,
         userId,
+        source, // "careerpilot" (posted here), "external" (imported) or empty for all
     } = req.query;
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = Math.min(50, Math.max(1, parseInt(req.query.limit) || 20));
 
     const query = {
         isClosed: false,
-        ...(keyword && { title: { $regex: keyword, $options: 'i' } }),
-        ...(location && { location: { $regex: location, $options: 'i' } }),
+        ...(keyword && {
+            $or: [
+                { title: { $regex: escapeRegex(keyword), $options: 'i' } },
+                { companyName: { $regex: escapeRegex(keyword), $options: 'i' } },
+                { tags: { $regex: escapeRegex(keyword), $options: 'i' } },
+            ],
+        }),
+        ...(location && { location: { $regex: escapeRegex(location), $options: 'i' } }),
+        ...(source === 'careerpilot' && { source: 'careerpilot' }),
+        ...(source === 'external' && { source: { $ne: 'careerpilot' } }),
         ...(category && { category }),
         ...(type && { type }),
     };
@@ -54,10 +81,14 @@ exports.getJobs = async (req, res) => {
     }
 
     try {
-        const jobs = await Job.find(query).populate(
-            'company',
-            'name companyName companyLogo'
-        );
+        const [jobs, total] = await Promise.all([
+            Job.find(query)
+                .sort({ postedAt: -1, _id: -1 })
+                .skip((page - 1) * limit)
+                .limit(limit)
+                .populate('company', 'name companyName companyLogo'),
+            Job.countDocuments(query),
+        ]);
 
         let SavedJobIds = [];
         let appliedJobStatusMap = {};
@@ -78,13 +109,13 @@ exports.getJobs = async (req, res) => {
         const jobsWithExtras = jobs.map((job) => {
             const jobIdStr = String(job._id);
             return {
-                ...job.toObject(),
+                ...withCompany(job),
                 isSaved: SavedJobIds.includes(jobIdStr),
                 applicationStatus: appliedJobStatusMap[jobIdStr] || null,
             };
         });
 
-        res.json(jobsWithExtras);
+        res.json({ jobs: jobsWithExtras, total, page, pages: Math.ceil(total / limit) });
 
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -153,7 +184,7 @@ exports.getJobById = async (req, res) => {
         }
 
         res.json({
-            ...job.toObject(),
+            ...withCompany(job),
             applicationStatus
         });
     } catch (error) {
@@ -222,6 +253,19 @@ exports.toggleCloseJob = async (req, res) => {
         await job.save();
 
         res.json({ message: "Job marked as closed" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+// @desc   Import jobs from public job boards (daily cron, or `npm run import-jobs`)
+// @access Requests with the CRON_SECRET bearer token, which Vercel Cron sends
+exports.runJobImport = async (req, res) => {
+    const secret = process.env.CRON_SECRET;
+    if (!secret || req.get('Authorization') !== `Bearer ${secret}`) {
+        return res.status(401).json({ message: 'Not authorized' });
+    }
+    try {
+        res.json(await importJobs());
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
