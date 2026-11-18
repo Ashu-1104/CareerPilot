@@ -22,7 +22,7 @@ A full-stack job portal built for job hunting in India. Employers post jobs and 
 - Live updates over **Server-Sent Events**, opened with a short-lived ticket instead of the login token.
 - Resumes are **private**: stored in MongoDB and served only to their owner and the employers they applied to.
 - Role-based access on every endpoint, uploads only for logged-in users (4 MB at most).
-- Runs as one **Vercel** project: the React app as static files and the Express API as a serverless function, with Vercel Cron for the daily import.
+- Runs as one **Vercel** project with two services: the React app and the Express API (a serverless function), with Vercel Cron for the daily import.
 
 ## Tech stack
 
@@ -47,7 +47,7 @@ React 19, Vite, Tailwind CSS 4, Framer Motion, dnd-kit, Node.js, Express 5, Mong
 
 ## Deploying to Vercel
 
-`vercel.json` builds the frontend, serves the API from `api/index.js` and runs the import at 06:00 IST every day.
+`vercel.json` deploys the frontend and the API (`backend/vercel.js`) as two services of one project, routes `/api` and `/uploads` to the API, and runs the import at 06:00 IST every day.
 
 1. Import the repository in Vercel and add MongoDB Atlas from **Storage** (it sets `MONGODB_URI`).
 2. Set `JWT_SECRET`, `CRON_SECRET` (Vercel Cron sends it to the import endpoint) and, if the database is shared, `MONGO_DB_NAME`.

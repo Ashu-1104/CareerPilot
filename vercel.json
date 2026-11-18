@@ -1,15 +1,20 @@
 {
-  "installCommand": "npm ci --prefix backend --omit=dev && npm ci --prefix frontend --include=dev",
-  "buildCommand": "npm run build --prefix frontend",
-  "outputDirectory": "frontend/dist",
   "regions": ["bom1"],
-  "functions": {
-    "api/index.js": { "maxDuration": 300 }
+  "services": {
+    "web": {
+      "root": "frontend",
+      "framework": "vite",
+      "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+    },
+    "api": {
+      "root": "backend",
+      "entrypoint": "vercel.js"
+    }
   },
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/index.js" },
-    { "source": "/uploads/(.*)", "destination": "/api/index.js" },
-    { "source": "/((?!api/|uploads/).*)", "destination": "/index.html" }
+    { "source": "/api/(.*)", "destination": { "service": "api" } },
+    { "source": "/uploads/(.*)", "destination": { "service": "api" } },
+    { "source": "/(.*)", "destination": { "service": "web" } }
   ],
   "crons": [{ "path": "/api/jobs/import", "schedule": "30 0 * * *" }]
 }

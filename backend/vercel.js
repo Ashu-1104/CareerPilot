@@ -1,6 +1,7 @@
-// Vercel serverless entry: the whole Express API as one function.
-const app = require("../backend/app");
-const { ensureDb } = require("../backend/config/db");
+// Vercel entry for the API service: the Express app with one cached database
+// connection per instance (server.js is the entry everywhere else).
+const app = require("./app");
+const { ensureDb } = require("./config/db");
 
 module.exports = async (req, res) => {
     try {

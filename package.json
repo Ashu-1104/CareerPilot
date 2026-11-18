@@ -1,5 +1,0 @@
-{
-  "name": "careerpilot",
-  "private": true,
-  "description": "CareerPilot job portal: React frontend (frontend/) and Express API (backend/), deployed together on Vercel"
-}
