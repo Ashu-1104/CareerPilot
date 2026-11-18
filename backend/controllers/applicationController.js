@@ -1,6 +1,7 @@
 const Application = require("../models/Application");
 const Job = require("../models/Job");
 const { trackJob, syncFromApplication } = require("./trackerController");
+const { notify } = require("../services/notify");
 
 // @desc   Apply for a job
 exports.applyToJob = async (req, res) => {
@@ -9,7 +10,7 @@ exports.applyToJob = async (req, res) => {
             return res.status(403).json({ message: 'Only jobSeekers can apply for jobs' });
         }
 
-        const job = await Job.findById(req.params.jobId).select('source applyUrl isClosed');
+        const job = await Job.findById(req.params.jobId).select('source applyUrl isClosed title company');
         if (!job || job.isClosed) {
             return res.status(404).json({ message: 'This job is no longer open' });
         }
@@ -33,6 +34,13 @@ exports.applyToJob = async (req, res) => {
             resume: req.user.resume, // assuming resume is stored in user profile 
         });
         await trackJob(req.user._id, req.params.jobId, 'Applied');
+        await notify(job.company, {
+            type: 'application',
+            title: `New application: ${job.title}`,
+            body: `${req.user.name} applied.`,
+            link: `/applicants?job=${job._id}`,
+            data: { jobId: job._id, applicationId: application._id },
+        });
 
         res.status(201).json(application);
     } catch (error) {
@@ -108,6 +116,13 @@ exports.updateStatus = async (req, res) => {
         app.status = status;
         await app.save();
         await syncFromApplication(app);
+        await notify(app.applicant, {
+            type: 'status',
+            title: `Application update: ${app.job.title}`,
+            body: `Your application is now "${status}".`,
+            link: `/job/${app.job._id}`,
+            data: { applicationId: app._id, status },
+        });
 
         res.json({ message: 'Application status updated', status });
     } catch (err) {

@@ -1,12 +1,13 @@
 // Global Imports
 import React from "react";
 import { useState, useEffect } from "react";
-import { Briefcase, Bookmark, KanbanSquare } from "lucide-react";
+import { Briefcase, Bookmark, CalendarClock, KanbanSquare } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
 // Local Imports
 import { useAuth } from "../../context/AuthContext";
 import ProfileDropdown from "./ProfileDropdown";
+import NotificationBell from "../NotificationBell";
 
 const Navbar = () => {
   const { user, logout, isAuthenticated } = useAuth();
@@ -49,6 +50,17 @@ const Navbar = () => {
                 <span className="hidden sm:inline">Tracker</span>
               </button>
             )}
+            {user?.role === "jobSeeker" && (
+              <button
+                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-gray-100 transition-colors duration-200 text-sm font-medium text-gray-600"
+                onClick={() => navigate("/interviews")}
+                title="Interviews"
+              >
+                <CalendarClock className="h-5 w-5 text-gray-500" />
+                <span className="hidden sm:inline">Interviews</span>
+              </button>
+            )}
+            {user && <NotificationBell />}
             {user && (
               <button
                 className="p-2 rounded-xl hover:bg-gray-100 transition-colors duration-200 relative"

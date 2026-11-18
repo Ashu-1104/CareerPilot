@@ -13,6 +13,19 @@ export const API_PATHS = {
         OVERVIEW: `/api/analytics/overview`, // Get dashboard overview data
     },
 
+    NOTIFICATIONS: {
+        GET: "/api/notifications", // Latest notifications + unread count
+        READ: "/api/notifications/read", // Mark one ({ id }) or all as read
+        STREAM_TICKET: "/api/notifications/stream-ticket", // Short ticket for the live stream
+        STREAM: (ticket) => `/api/notifications/stream?ticket=${encodeURIComponent(ticket)}`,
+    },
+    MESSAGES: (applicationId) => `/api/applications/${applicationId}/messages`,
+    INTERVIEWS: {
+        GET: "/api/interviews", // My interviews (employer or candidate)
+        PROPOSE: "/api/interviews", // Employer offers time slots
+        CONFIRM: (id) => `/api/interviews/${id}/confirm`, // Candidate picks a slot
+        CANCEL: (id) => `/api/interviews/${id}/cancel`,
+    },
     TRACKER: {
         GET: "/api/tracker", // Tracked jobs and stats
         ADD: "/api/tracker", // Track a job ({ jobId } or a job from another site)

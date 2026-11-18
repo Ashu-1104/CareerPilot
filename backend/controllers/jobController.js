@@ -171,6 +171,7 @@ exports.getJobById = async (req, res) => {
         }
 
         let applicationStatus = null;
+        let applicationId = null;
 
         if (userId) {
             const application = await Application.findOne({
@@ -180,12 +181,14 @@ exports.getJobById = async (req, res) => {
 
             if (application) {
                 applicationStatus = application.status;
+                applicationId = application._id;
             }
         }
 
         res.json({
             ...withCompany(job),
-            applicationStatus
+            applicationStatus,
+            applicationId,
         });
     } catch (error) {
         res.status(500).json({ message: error.message });

@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { NAVIGATION_MENU } from "../../utils/data";
 import ProfileDropdown from "./ProfileDropdown";
+import NotificationBell from "../NotificationBell";
 
 const NavigationItem = ({ item, isActive, onClick, isCollapsed }) => {
   const Icon = item.icon;
@@ -187,6 +188,7 @@ const DashboardLayout = ({ activeMenu, children }) => {
           </div>
 
           <div className="flex items-center space-x-3">
+            <NotificationBell />
             {/* Profile Dropdown */}
             <ProfileDropdown
             isOpen={profileDropdownOpen}

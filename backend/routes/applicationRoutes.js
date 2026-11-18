@@ -9,6 +9,7 @@ const {
     getApplicationById,
     updateStatus,
 } = require("../controllers/applicationController");
+const { getMessages, sendMessage } = require("../controllers/messageController");
 const { protect } = require("../middlewares/authMiddleware");
 
 const router = express.Router();
@@ -18,5 +19,6 @@ router.get("/my", protect, getMyApplications);
 router.get("/job/:jobId", protect, getApplicantsForJob);
 router.get("/:id", protect, getApplicationById);
 router.put("/:id/status", protect, updateStatus);
+router.route("/:id/messages").get(protect, getMessages).post(protect, sendMessage);
 
 module.exports = router;

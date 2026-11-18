@@ -1,10 +1,10 @@
 // global React
 import React from "react";
-import { MapPin, DollarSign, Building2, Clock, Users, ExternalLink } from "lucide-react";
+import { MapPin, DollarSign, Building2, Clock, Users, ExternalLink, MessageSquare } from "lucide-react";
 import { useEffect, useState } from "react";
 import moment from "moment";
 import toast from "react-hot-toast";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 
 // local imports
 import { useAuth } from "../../context/AuthContext";
@@ -13,12 +13,15 @@ import { API_PATHS } from "../../utils/apiPaths";
 import Navbar from "../../components/layout/Navbar";
 import StatusBadge from "../../components/StatusBadge";
 import { trackExternalApply } from "../../utils/helper";
+import ChatDrawer from "../../components/ChatDrawer";
 
 const JobDetails = () => {
   const { user } = useAuth();
   const { jobId } = useParams();
 
   const [jobDetails, setJobDetails] = useState(null);
+  const [searchParams] = useSearchParams();
+  const [chatOpen, setChatOpen] = useState(searchParams.get("chat") === "1");
   const isExternal = jobDetails?.source && jobDetails.source !== "careerpilot";
 
   const getJobDetailsById = async () => {
@@ -95,7 +98,7 @@ const JobDetails = () => {
                       <div className="flex items-center space-x-2">
                         <Building2 className="h-4 w-4" />
                         <span className="text-sm font-semibold">
-                          {jobDetails?.company?.companyName}
+                          {jobDetails?.company?.companyName || jobDetails?.company?.name}
                         </span>
                       </div>
                       {isExternal && (
@@ -114,7 +117,18 @@ const JobDetails = () => {
                   </div>
 
                   {jobDetails?.applicationStatus ? (
-                    <StatusBadge status={jobDetails.applicationStatus} />
+                    <div className="flex items-center gap-3">
+                      <StatusBadge status={jobDetails.applicationStatus} />
+                      {jobDetails.applicationId && (
+                        <button
+                          onClick={() => setChatOpen(true)}
+                          className="flex items-center gap-1.5 text-sm font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 px-4 py-2 rounded-xl"
+                        >
+                          <MessageSquare className="h-4 w-4" />
+                          Message employer
+                        </button>
+                      )}
+                    </div>
                   ) : isExternal ? (
                     // imported jobs are applied for on the company's own site
                     <a
@@ -228,6 +242,13 @@ const JobDetails = () => {
           </div>
         )}
       </div>
+      {chatOpen && jobDetails?.applicationId && (
+        <ChatDrawer
+          applicationId={jobDetails.applicationId}
+          title={jobDetails.company?.companyName || jobDetails.company?.name || "Employer"}
+          onClose={() => setChatOpen(false)}
+        />
+      )}
     </div>
   );
 };

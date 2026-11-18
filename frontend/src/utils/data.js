@@ -10,6 +10,7 @@ import {
     Briefcase,
     Building2,
     LayoutDashboard,
+    CalendarClock,
     Plus,
 } from "lucide-react";
 
@@ -72,6 +73,7 @@ export const NAVIGATION_MENU = [
     { id: "employer-dashboard", name: "Dashboard", icon: LayoutDashboard },
     { id: "post-job", name: "Post a Job", icon: Plus },
     { id: "manage-jobs", name: "Manage Jobs", icon: Briefcase },
+    { id: "interviews", name: "Interviews", icon: CalendarClock },
     { id: "company-profile", name: "Company Profile", icon: Building2 },
 
 ];

@@ -9,6 +9,8 @@ import {
   Download,
   Eye,
   ArrowLeft,
+  MessageSquare,
+  CalendarClock,
 } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import moment from "moment";
@@ -20,10 +22,16 @@ import { API_PATHS } from "../../utils/apiPaths";
 import { getInitials } from "../../utils/helper";
 import StatusBadge from "../../components/StatusBadge";
 import ApplicantProfilPreview from "../../components/Cards/ApplicantProfilPreview";
+import ChatDrawer from "../../components/ChatDrawer";
+import ScheduleInterviewModal from "../../components/ScheduleInterviewModal";
 
 const ApplicationViewer = () => {
   const location = useLocation();
-  const jobId = location.state?.jobId || null;
+  // from Manage Jobs (state) or from a notification link (?job=...&chat=...)
+  const query = new URLSearchParams(location.search);
+  const jobId = location.state?.jobId || query.get("job") || null;
+  const [chatWith, setChatWith] = useState(null); // application
+  const [scheduling, setScheduling] = useState(null); // application
 
   const navigate = useNavigate();
 
@@ -49,6 +57,14 @@ const ApplicationViewer = () => {
     if (jobId) fetchApplications();
     else navigate("/manage-jobs");
   }, []);
+
+  // opened from a message notification: open that conversation
+  useEffect(() => {
+    const chatId = query.get("chat");
+    const application = chatId && applications.find((a) => a._id === chatId);
+    if (application) setChatWith(application);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [applications]);
 
   // Group applications by jobs
   const groupedApplications = useMemo(() => {
@@ -217,6 +233,22 @@ const ApplicationViewer = () => {
                               </button>
 
                               <button
+                                onClick={() => setChatWith(application)}
+                                className="inline-flex items-center gap-2 px-3 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors cursor-pointer"
+                              >
+                                <MessageSquare className="h-4 w-4" />
+                                Message
+                              </button>
+
+                              <button
+                                onClick={() => setScheduling(application)}
+                                className="inline-flex items-center gap-2 px-3 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors cursor-pointer"
+                              >
+                                <CalendarClock className="h-4 w-4" />
+                                Interview
+                              </button>
+
+                              <button
                                 onClick={() =>
                                   setSelectedApplicant(application)
                                 }
@@ -236,6 +268,17 @@ const ApplicationViewer = () => {
             </div>
           )}
         </div>
+
+        {chatWith && (
+          <ChatDrawer
+            applicationId={chatWith._id}
+            title={chatWith.applicant?.name || "Candidate"}
+            onClose={() => setChatWith(null)}
+          />
+        )}
+        {scheduling && (
+          <ScheduleInterviewModal application={scheduling} onClose={() => setScheduling(null)} />
+        )}
 
         {/* Profile Modal */}
         {selectedApplicant && (
