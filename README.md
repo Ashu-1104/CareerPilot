@@ -53,10 +53,6 @@ React 19, Vite, Tailwind CSS 4, Framer Motion, dnd-kit, Node.js, Express 5, Mong
 2. Set `JWT_SECRET`, `CRON_SECRET` (Vercel Cron sends it to the import endpoint) and, if the database is shared, `MONGO_DB_NAME`.
 3. Deploy, then load jobs once: `curl -H "Authorization: Bearer $CRON_SECRET" https://<your-app>/api/jobs/import`.
 
-## Credits
-
-CareerPilot is built on [Job Portal](https://github.com/Abhay-0103/Job-Portal-Project) by Abhay Singh, released under the MIT License. The original copyright notice is kept in [LICENSE](./LICENSE).
-
 ## License
 
-MIT
+MIT. See [LICENSE](./LICENSE).

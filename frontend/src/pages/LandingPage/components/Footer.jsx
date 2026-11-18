@@ -30,16 +30,7 @@ const Footer = () => {
                 reserved.
               </p>
               <p className={`text-sm text-gray-500`}>
-                CareerPilot by Ashutosh Tiwari · based on{" "}
-                <a
-                  href="https://github.com/Abhay-0103/Job-Portal-Project"
-                  className="underline hover:text-gray-700"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Job Portal by Abhay Singh
-                </a>{" "}
-                (MIT)
+                CareerPilot by Ashutosh Tiwari
               </p>
             </div>
           </div>
