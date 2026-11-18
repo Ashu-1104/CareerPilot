@@ -22,6 +22,9 @@ const userSchema = new mongoose.Schema({
     },
     avatar: String,
     resume: String,
+    // skills read from the resume PDF (services/resumeParser.js); never sent to other users
+    resumeSkills: { type: [String], default: undefined },
+    resumeParsedAt: Date,
 
     // for employers
     companyName: String,

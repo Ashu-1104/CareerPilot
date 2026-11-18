@@ -2,6 +2,8 @@
 // each into the shape of our Job model. Every source is keyless; each card in
 // the app links back to the source, as their terms ask.
 
+const { extractSkills } = require("./skills");
+
 const TIMEOUT_MS = 20000;
 const USER_AGENT = "CareerPilot job import (+https://github.com/Ashu-1104/careerpilot)";
 
@@ -95,13 +97,16 @@ const remoteLabel = (places = []) => {
 const job = (fields) => {
     const category = categoryFor(fields.title);
     if (!category || !fields.applyUrl || !fields.externalId) return null;
+    const description = htmlToText(fields.description).slice(0, 20000) || fields.title;
+    const tags = (fields.tags || []).map(String).slice(0, 12);
     return {
         ...fields,
         externalId: String(fields.externalId),
-        description: htmlToText(fields.description).slice(0, 20000) || fields.title,
+        description,
+        skills: extractSkills(`${fields.title}\n${tags.join(", ")}\n${description}`),
         category,
         type: fields.type || typeFor(fields.title),
-        tags: (fields.tags || []).map(String).slice(0, 12),
+        tags,
     };
 };
 

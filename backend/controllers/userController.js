@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const User = require('../models/User');
+const { refreshResumeSkills } = require('../services/resumeParser');
 
 // @desc   Update user profile (name, avatar, company details)
 exports.updateProfile = async (req, res) => {
@@ -11,6 +12,7 @@ exports.updateProfile = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
+        const resumeChanged = Boolean(resume) && resume !== user.resume;
         user.name = name || user.name;
         user.avatar = avatar || user.avatar;
         user.resume = resume || user.resume;
@@ -23,7 +25,14 @@ exports.updateProfile = async (req, res) => {
         }
         await user.save();
 
+        // a new resume: read its skills for job match scores
+        let resumeParse;
+        if (user.role === 'jobSeeker' && (resumeChanged || (user.resume && !user.resumeParsedAt))) {
+            resumeParse = await refreshResumeSkills(user);
+        }
+
         res.json({
+            ...(resumeParse && { resumeSkills: user.resumeSkills || [], resumeParseError: resumeParse.error }),
             _id: user._id,
             name: user.name,
             email: user.email,
@@ -76,6 +85,8 @@ exports.deleteResume = async (req, res) => {
 
         // Set user's resume field to null or empty string
         user.resume = '';
+        user.resumeSkills = undefined;
+        user.resumeParsedAt = undefined;
         await user.save();
 
         res.json({ message: 'Resume deleted successfully', user: {

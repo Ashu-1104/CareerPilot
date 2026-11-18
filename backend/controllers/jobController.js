@@ -4,6 +4,18 @@ const Application = require('../models/Application');
 const SavedJob = require('../models/SavedJob');
 const { SOURCE_INFO } = require('../services/jobSources');
 const { importJobs } = require('../services/jobImport');
+const { matchScore } = require('../services/skills');
+
+// The logged-in job seeker's match for a job (only their own; never from a query parameter).
+const matchFor = (req, job) =>
+    req.user?.role === 'jobSeeker' && req.user.resumeSkills?.length
+        ? matchScore(req.user.resumeSkills, job.skills)
+        : undefined;
+
+// Fields an employer's request may never set on a job.
+const SYSTEM_FIELDS = ['company', 'source', 'externalId', 'applyUrl', 'companyName', 'companyLogoUrl', 'skills', 'lastSeenAt', 'postedAt'];
+const jobInput = (body = {}) =>
+    Object.fromEntries(Object.entries(body).filter(([key]) => !SYSTEM_FIELDS.includes(key)));
 
 const escapeRegex = (text) => String(text).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -27,7 +39,7 @@ exports.createJob = async (req, res) => {
             return res.status(403).json({ message: 'Only employers can create job postings' });
         }
 
-        const job = await Job.create({ ...req.body, company: req.user._id });
+        const job = await Job.create({ ...jobInput(req.body), company: req.user._id });
         res.status(201).json(job);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -81,14 +93,28 @@ exports.getJobs = async (req, res) => {
     }
 
     try {
-        const [jobs, total] = await Promise.all([
-            Job.find(query)
-                .sort({ postedAt: -1, _id: -1 })
-                .skip((page - 1) * limit)
-                .limit(limit)
-                .populate('company', 'name companyName companyLogo'),
-            Job.countDocuments(query),
-        ]);
+        let jobs, total;
+        if (req.query.sort === 'match' && req.user?.resumeSkills?.length) {
+            // best match first: score every matching job (skills only), then load one page
+            const all = await Job.find(query).select('skills postedAt');
+            total = all.length;
+            const ranked = all
+                .map((j) => ({ id: j._id, score: matchScore(req.user.resumeSkills, j.skills)?.score ?? -1, postedAt: j.postedAt }))
+                .sort((a, b) => b.score - a.score || b.postedAt - a.postedAt)
+                .slice((page - 1) * limit, page * limit);
+            const loaded = await Job.find({ _id: { $in: ranked.map((r) => r.id) } }).populate('company', 'name companyName companyLogo');
+            const byId = new Map(loaded.map((j) => [String(j._id), j]));
+            jobs = ranked.map((r) => byId.get(String(r.id))).filter(Boolean);
+        } else {
+            [jobs, total] = await Promise.all([
+                Job.find(query)
+                    .sort({ postedAt: -1, _id: -1 })
+                    .skip((page - 1) * limit)
+                    .limit(limit)
+                    .populate('company', 'name companyName companyLogo'),
+                Job.countDocuments(query),
+            ]);
+        }
 
         let SavedJobIds = [];
         let appliedJobStatusMap = {};
@@ -110,6 +136,7 @@ exports.getJobs = async (req, res) => {
             const jobIdStr = String(job._id);
             return {
                 ...withCompany(job),
+                match: matchFor(req, job),
                 isSaved: SavedJobIds.includes(jobIdStr),
                 applicationStatus: appliedJobStatusMap[jobIdStr] || null,
             };
@@ -187,6 +214,7 @@ exports.getJobById = async (req, res) => {
 
         res.json({
             ...withCompany(job),
+            match: matchFor(req, job),
             applicationStatus,
             applicationId,
         });
@@ -209,7 +237,7 @@ exports.updateJob = async (req, res) => {
                 .json({ message: 'Unauthorized' });
         }
 
-        Object.assign(job, req.body);
+        Object.assign(job, jobInput(req.body));
         const updated = await job.save();
         res.json(updated);
     } catch (error) {

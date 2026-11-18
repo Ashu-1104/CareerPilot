@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { extractSkills } = require('../services/skills');
 
 const jobSchema = new mongoose.Schema({
     title: {
@@ -53,6 +54,8 @@ const jobSchema = new mongoose.Schema({
     companyName: String,
     companyLogoUrl: String,
     tags: [String],
+    // skills the job asks for, in the order it mentions them (services/skills.js)
+    skills: [String],
     // when the job was posted, here or on the source board; used to sort newest first
     postedAt: {
         type: Date,
@@ -63,6 +66,14 @@ const jobSchema = new mongoose.Schema({
 },
     { timestamps: true }
 );
+
+// Jobs posted here: work out their skills whenever the text changes.
+// (Imported jobs get theirs in services/jobSources.js.)
+jobSchema.pre('save', function () {
+    if (this.isModified('title') || this.isModified('description') || this.isModified('requirements')) {
+        this.skills = extractSkills(`${this.title}\n${this.requirements || ''}\n${this.description}`);
+    }
+});
 
 jobSchema.index(
     { source: 1, externalId: 1 },

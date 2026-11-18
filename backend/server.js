@@ -15,6 +15,7 @@ const analyticsRoutes = require("./routes/analyticsRoutes");
 const trackerRoutes = require("./routes/trackerRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const interviewRoutes = require("./routes/interviewRoutes");
+const matchRoutes = require("./routes/matchRoutes");
 
 const app = express();
 
@@ -43,6 +44,7 @@ app.use("/api/analytics", analyticsRoutes);
 app.use("/api/tracker", trackerRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/interviews", interviewRoutes);
+app.use("/api/match", matchRoutes);
 
 // serve uploads folder 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {}));

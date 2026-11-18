@@ -49,5 +49,14 @@ exports.importJobs = async () => {
         { $set: { isClosed: true } }
     );
     report.closedStale = closed.modifiedCount;
+
+    // jobs saved before skills were tracked
+    const { extractSkills } = require("./skills");
+    const unskilled = await Job.find({ skills: { $exists: false } }).select("title description requirements tags");
+    for (const job of unskilled) {
+        job.skills = extractSkills(`${job.title}\n${(job.tags || []).join(", ")}\n${job.requirements || ""}\n${job.description}`);
+        await job.save({ validateBeforeSave: false });
+    }
+    report.skillsBackfilled = unskilled.length;
     return report;
 };
